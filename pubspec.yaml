@@ -1,0 +1,29 @@
+name: rocky_rewards
+description: A new Flutter project.
+
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  shared_preferences: ^2.0.8
+  vrouter: ^1.2.0+12
+  signature: ^4.1.1
+  rxdart: ^0.27.2
+  get: ^4.3.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^1.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/icon_white.png
+    - assets/icon_red.png
