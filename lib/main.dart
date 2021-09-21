@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rocky_rewards/rocky_rewards.dart';
+import 'package:rocky_rewards/utils/rocky_rewards.dart';
+import 'package:rocky_rewards/widgets/add_reward.dart';
 import 'package:rocky_rewards/widgets/home.dart';
 import 'package:vrouter/vrouter.dart';
 
@@ -17,14 +18,18 @@ class MyApp extends StatelessWidget {
     themeMode: ThemeMode.system,
     theme: ThemeData(
       brightness: Brightness.light,
-      primarySwatch: Colors.red,
+      primaryColor: Colors.red,
+      primarySwatch: Colors.red
     ),
     darkTheme: ThemeData(
       brightness: Brightness.dark,
-      primarySwatch: Colors.red
+      primaryColor: const Color(0xFFCC0A2D),
+        primarySwatch: Colors.red
+
     ),
     routes: [
-      VWidget(path: '/', widget: const HomePage())
+      VWidget(path: '/', widget: const HomePage()),
+      VWidget(path: '/add_reward', widget: AddReward(),),
     ],
   );
 }

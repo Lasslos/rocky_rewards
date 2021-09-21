@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:get/get.dart';
-import 'package:rocky_rewards/image_coder.dart';
+import 'package:rocky_rewards/utils/image_coder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RockyReward {
@@ -12,25 +12,27 @@ class RockyReward {
   String groupName;
   String description;
   AttendanceType attendance;
+  int? hoursOrNumberOfGames;
   int points;
   Image signature;
   String phone;
 
-  RockyReward(this.date, this.rewardType, this.groupName, this.description, this.attendance, this.points, this.signature, this.phone);
+  RockyReward(this.date, this.rewardType, this.groupName, this.description, this.attendance, this.hoursOrNumberOfGames, this.points, this.signature, this.phone);
 
   static Future<RockyReward> fromJSON(Map<String, Object> json) async {
-    var date = getFromJSON<DateTime>(json, 'date', DateTime.now());
-    var rewardType = RewardType.values[getFromJSON<int>(json, 'rewardType', 0)];
-    var groupName = getFromJSON<String>(json, 'groupName', '');
-    var description = getFromJSON(json, 'description', '');
-    var attendance = AttendanceType.values[getFromJSON<int>(json, 'attendance', 0)];
-    var points = getFromJSON<int>(json, 'points', 1);
-    var signature = (await decodeImage(getFromJSON<List<String>>(json, 'signature', [])))!;
-    var phone = getFromJSON<String>(json, 'phone', '012-345-6789');
-    return RockyReward(date, rewardType, groupName, description, attendance, points, signature, phone);
+    var date = _getFromJSON<DateTime>(json, 'date', DateTime.now());
+    var rewardType = RewardType.values[_getFromJSON<int>(json, 'rewardType', 0)];
+    var groupName = _getFromJSON<String>(json, 'groupName', '');
+    var description = _getFromJSON(json, 'description', '');
+    var attendance = AttendanceType.values[_getFromJSON<int>(json, 'attendance', 0)];
+    var hoursOrNumbersOfGames = _getFromJSON<int?>(json, 'hoursOrNumbersOfGames', null);
+    var points = _getFromJSON<int>(json, 'points', 1);
+    var signature = (await decodeImage(_getFromJSON<List<String>>(json, 'signature', [])))!;
+    var phone = _getFromJSON<String>(json, 'phone', '012-345-6789');
+    return RockyReward(date, rewardType, groupName, description, attendance, hoursOrNumbersOfGames, points, signature, phone);
   }
 
-  static T getFromJSON<T>(Map<String, Object> json, String path, T fallback) {
+  static T _getFromJSON<T>(Map<String, Object> json, String path, T fallback) {
     Object? result = json[path];
     if (result == null || result is! T) {
       return fallback;
@@ -45,6 +47,9 @@ class RockyReward {
     result['groupName'] = groupName;
     result['description'] = description;
     result['attendance'] = attendance.index;
+    if (hoursOrNumberOfGames != null) {
+      result['hoursOrNumberOfGames'] = hoursOrNumberOfGames!;
+    }
     result['points'] = points;
     result['signature'] = await encodeImage(signature) ?? [];
     result['phone'] = phone;
@@ -54,7 +59,7 @@ class RockyReward {
 }
 
 enum RewardType {
-  volunteer, schoolActivity, community
+  volunteer, school, community
 }
 enum AttendanceType {
   participant, spectator
@@ -72,6 +77,7 @@ class RockyRewardsManager {
   RxList<RockyReward> get rewardsList => RxList.unmodifiable(_rewardsList);
   void addReward(RockyReward reward) {
     _rewardsList.add(reward);
+    save();
   }
 
   Future<void> load() async {

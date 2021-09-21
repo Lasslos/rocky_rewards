@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rocky_rewards/rocky_rewards.dart';
+import 'package:rocky_rewards/utils/rocky_rewards.dart';
 
 class RewardListTile extends StatelessWidget {
   final RockyReward reward;
