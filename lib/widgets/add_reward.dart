@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:signature/signature.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'package:vrouter/vrouter.dart';
 
 import '../utils/rocky_rewards.dart';
 
@@ -169,9 +170,10 @@ class AddReward extends StatelessWidget {
 
           Container(
             padding: const EdgeInsets.only(left: 10, bottom: 10, right: 10),
-            child: const Center(
+            child: Center(
               child: TextField(
-                decoration: InputDecoration(
+                controller: controller.phoneController,
+                decoration: const InputDecoration(
                     labelText: "Phone number of responsible person"
                 ),
               ),
@@ -180,16 +182,24 @@ class AddReward extends StatelessWidget {
 
           TextButton(
             onPressed: () async {
-              //TextController.isBlank will never return null.
-              if (controller.groupNameController.isBlank! ||
-                  controller.descriptionController.isBlank! ||
-                  (controller.phoneController.isBlank!) ||
+              if (controller.groupNameController.text.isEmpty ||
+                  controller.descriptionController.text.isEmpty ||
+                  controller.phoneController.text.isEmpty||
                   controller.signatureController.isEmpty
               ) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Center(
-                      child: Text('Please fill out every field.'),
+                    content: SizedBox(
+                      height: 25,
+                      child: Center(
+                        child: Text(
+                          'Please fill out every field.',
+                          style: TextStyle(
+                            color: Color(0xFFCC0A2D),
+                            fontSize: 16
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 );
@@ -206,8 +216,9 @@ class AddReward extends StatelessWidget {
                     controller.points.value,
                     (await controller.signatureController.toImage())!,
                     controller.phoneController.text,
-                )
+                ),
               );
+              context.vRouter.to('/');
             },
             child: Container(
               padding: const EdgeInsets.all(10),

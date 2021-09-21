@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
     themeMode: ThemeMode.system,
     theme: ThemeData(
       brightness: Brightness.light,
-      primaryColor: Colors.red,
+      primaryColor: const Color(0xFFCC0A2D),
       primarySwatch: Colors.red
     ),
     darkTheme: ThemeData(
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
     ),
     routes: [
       VWidget(path: '/', widget: const HomePage()),
-      VWidget(path: '/add_reward', widget: AddReward(),),
+      VWidget(path: '/add_reward', widget: AddReward(key: UniqueKey()),),
     ],
   );
 }

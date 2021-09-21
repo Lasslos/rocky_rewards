@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:get/get.dart';
@@ -19,7 +20,7 @@ class RockyReward {
 
   RockyReward(this.date, this.rewardType, this.groupName, this.description, this.attendance, this.hoursOrNumberOfGames, this.points, this.signature, this.phone);
 
-  static Future<RockyReward> fromJSON(Map<String, Object> json) async {
+  static Future<RockyReward> fromJSON(Map<String, dynamic> json) async {
     var date = _getFromJSON<DateTime>(json, 'date', DateTime.now());
     var rewardType = RewardType.values[_getFromJSON<int>(json, 'rewardType', 0)];
     var groupName = _getFromJSON<String>(json, 'groupName', '');
@@ -27,12 +28,12 @@ class RockyReward {
     var attendance = AttendanceType.values[_getFromJSON<int>(json, 'attendance', 0)];
     var hoursOrNumbersOfGames = _getFromJSON<int?>(json, 'hoursOrNumbersOfGames', null);
     var points = _getFromJSON<int>(json, 'points', 1);
-    var signature = (await decodeImage(_getFromJSON<List<String>>(json, 'signature', [])))!;
+    var signature = (await decodeImage(_getFromJSON<Uint8List>(json, 'signature', Uint8List(0))))!;
     var phone = _getFromJSON<String>(json, 'phone', '012-345-6789');
     return RockyReward(date, rewardType, groupName, description, attendance, hoursOrNumbersOfGames, points, signature, phone);
   }
 
-  static T _getFromJSON<T>(Map<String, Object> json, String path, T fallback) {
+  static T _getFromJSON<T>(Map<String, dynamic> json, String path, T fallback) {
     Object? result = json[path];
     if (result == null || result is! T) {
       return fallback;
@@ -51,7 +52,7 @@ class RockyReward {
       result['hoursOrNumberOfGames'] = hoursOrNumberOfGames!;
     }
     result['points'] = points;
-    result['signature'] = await encodeImage(signature) ?? [];
+    result['signature'] = await encodeImage(signature) ?? Uint8List(0);
     result['phone'] = phone;
 
     return result;
@@ -93,7 +94,7 @@ class RockyRewardsManager {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     List<String> rewardsList = [];
     for (var reward in this.rewardsList) {
-      rewardsList.add(jsonEncode(reward.toJSON()));
+      rewardsList.add(jsonEncode(await reward.toJSON()));
     }
     preferences.setStringList('rewards', rewardsList);
   }

@@ -15,7 +15,7 @@ class HomePage extends StatelessWidget {
         leading: Theme.of(context).brightness == Brightness.light
             ? Image.asset('assets/icon_white.png', height: 41,)
             : Image.asset('assets/icon_red.png', height: 41,),
-        title: Text('Rocky Rewards - Overview'),
+        title: const Text('Rocky Rewards - Overview'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -235,7 +235,10 @@ class LastRewards extends StatelessWidget {
                     itemCount: itemCount,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
-                      return RewardListTile(reward: list[index]);
+                      return RewardListTile(
+                        reward: list[index],
+                        scrollDirection: Axis.horizontal,
+                      );
                     },
                   );
                 }),

@@ -1,49 +1,30 @@
 import 'dart:typed_data';
 import 'dart:ui';
 
-Future<List<String>?> encodeImage(Image image) => 
+Future<Uint8List?> encodeImage(Image image) =>
     ImageEncoder.encodeImage(image);
 
-Future<Image?> decodeImage(List<String> stringList) =>
-    ImageDecoder.decodeImage(stringList);
+Future<Image?> decodeImage(Uint8List bytes) =>
+    ImageDecoder.decodeImage(bytes);
 
 class ImageEncoder {
-  static Future<List<String>?> encodeImage(Image image) async {
+  static Future<Uint8List?> encodeImage(Image image) async {
     //Trying to get bytes
-    ByteData? bytes;
+    ByteData bytes;
     try {
-      final bytes = await image.toByteData(
-          format: ImageByteFormat.png);
-      if (bytes == null) {
-        throw Exception();
-      }
+      bytes = (await image.toByteData(
+          format: ImageByteFormat.png))!;
     } on Exception {
-      //Return null on fail
+      //Return null when conversion throws error or returns null
       return null;
     }
-    //Turn into uInt8List on success
-    var uInt8List = bytes!.buffer.asUint8List();
-    //Turn into StringList
-    List<String> stringList = [];
-    for (var element in uInt8List) {
-      stringList.add(element.toString());
-    }
 
-    return stringList;
+    //Turn into uInt8List on success
+    return bytes.buffer.asUint8List();
   }
 }
 class ImageDecoder {
-  static Future<Image?> decodeImage(List<String> stringList) async {
-    List<int> intList = [];
-    for (var element in stringList) {
-      try {
-        intList.add(int.parse(element));
-      } on FormatException {
-        return null;
-      }
-    }
-    //Get Image
-    var bytes = Uint8List.fromList(intList);
+  static Future<Image?> decodeImage(Uint8List bytes) async {
     final codec = await instantiateImageCodec(bytes);
     final frameInfo = await codec.getNextFrame();
     return frameInfo.image;
