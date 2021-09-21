@@ -64,14 +64,10 @@ class AddReward extends StatelessWidget {
             padding: const EdgeInsets.only(left: 10, bottom: 10, right: 10),
             child: Center(
               child: TextField(
+                controller: controller.groupNameController,
                 decoration: const InputDecoration(
                     labelText: "Name of Organization, Team or Club"
                 ),
-                onSubmitted: (input) {
-                  if (input.isNotEmpty) {
-                    controller.groupName.value = input;
-                  }
-                },
               ),
             ),
           ),
@@ -80,14 +76,10 @@ class AddReward extends StatelessWidget {
             padding: const EdgeInsets.only(left: 10, bottom: 10, right: 10),
             child: Center(
               child: TextField(
+                controller: controller.descriptionController,
                 decoration: const InputDecoration(
                     labelText: "Description"
                 ),
-                onSubmitted: (input) {
-                  if (input.isNotEmpty) {
-                    controller.description.value = input;
-                  }
-                },
               ),
             ),
           ),
@@ -188,9 +180,10 @@ class AddReward extends StatelessWidget {
 
           TextButton(
             onPressed: () async {
-              if ((controller.groupName.value?.isEmpty ?? true) ||
-                  (controller.description.value?.isEmpty ?? true) ||
-                  (controller.phone.isEmpty ?? true) ||
+              //TextController.isBlank will never return null.
+              if (controller.groupNameController.isBlank! ||
+                  controller.descriptionController.isBlank! ||
+                  (controller.phoneController.isBlank!) ||
                   controller.signatureController.isEmpty
               ) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -206,13 +199,13 @@ class AddReward extends StatelessWidget {
                 RockyReward(
                   DateTime.now(),
                     controller.rewardType.value,
-                    controller.groupName.value!,
-                    controller.description.value!,
+                    controller.groupNameController.text,
+                    controller.descriptionController.text,
                     controller.attendanceType.value,
                     controller.hoursOrNumberOfGames.value,
                     controller.points.value,
                     (await controller.signatureController.toImage())!,
-                    controller.phone.value!,
+                    controller.phoneController.text,
                 )
               );
             },
@@ -237,8 +230,5 @@ class AddRewardController extends GetxController {
   SignatureController signatureController = SignatureController(
     exportBackgroundColor: Colors.white,
   );
-  Rx<String?> phone = Rx<String?>(null);
-
-
-
+  TextEditingController phoneController = TextEditingController();
 }
