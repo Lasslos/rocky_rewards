@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
-import 'dart:ui';
 
 import 'package:get/get.dart';
 import 'package:rocky_rewards/utils/image_coder.dart';
@@ -15,7 +13,7 @@ class RockyReward {
   AttendanceType attendance;
   int? hoursOrNumberOfGames;
   int points;
-  Image signature;
+  MyImage signature;
   String phone;
 
   RockyReward(this.date, this.rewardType, this.groupName, this.description, this.attendance, this.hoursOrNumberOfGames, this.points, this.signature, this.phone);
@@ -28,10 +26,9 @@ class RockyReward {
     var attendance = AttendanceType.values[_getFromJSON<int>(json, 'attendance', 0)];
     var hoursOrNumbersOfGames = _getFromJSON<int?>(json, 'hoursOrNumbersOfGames', null);
     var points = _getFromJSON<int>(json, 'points', 1);
-    print(json['signature']);
-    var signature = await decodeImage(Uint8List.fromList(_getFromJSON<List<int>>(json, 'signature', [0])));
+    var signature = MyImage.fromString(_getFromJSON<String>(json, 'signature', ''));
     var phone = _getFromJSON<String>(json, 'phone', '012-345-6789');
-    return RockyReward(date, rewardType, groupName, description, attendance, hoursOrNumbersOfGames, points, signature!, phone);
+    return RockyReward(date, rewardType, groupName, description, attendance, hoursOrNumbersOfGames, points, signature, phone);
   }
 
   static T _getFromJSON<T>(Map<String, dynamic> json, String path, T fallback) {
@@ -53,8 +50,7 @@ class RockyReward {
       result['hoursOrNumberOfGames'] = hoursOrNumberOfGames!;
     }
     result['points'] = points;
-    print(encodeImage(signature));
-    result['signature'] = await encodeImage(signature) ?? Uint8List(0);
+    result['signature'] = signature.toString();
     result['phone'] = phone;
 
     return result;
