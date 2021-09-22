@@ -28,9 +28,10 @@ class RockyReward {
     var attendance = AttendanceType.values[_getFromJSON<int>(json, 'attendance', 0)];
     var hoursOrNumbersOfGames = _getFromJSON<int?>(json, 'hoursOrNumbersOfGames', null);
     var points = _getFromJSON<int>(json, 'points', 1);
-    var signature = (await decodeImage(_getFromJSON<Uint8List>(json, 'signature', Uint8List(0))))!;
+    print(json['signature']);
+    var signature = await decodeImage(Uint8List.fromList(_getFromJSON<List<int>>(json, 'signature', [0])));
     var phone = _getFromJSON<String>(json, 'phone', '012-345-6789');
-    return RockyReward(date, rewardType, groupName, description, attendance, hoursOrNumbersOfGames, points, signature, phone);
+    return RockyReward(date, rewardType, groupName, description, attendance, hoursOrNumbersOfGames, points, signature!, phone);
   }
 
   static T _getFromJSON<T>(Map<String, dynamic> json, String path, T fallback) {
@@ -52,6 +53,7 @@ class RockyReward {
       result['hoursOrNumberOfGames'] = hoursOrNumberOfGames!;
     }
     result['points'] = points;
+    print(encodeImage(signature));
     result['signature'] = await encodeImage(signature) ?? Uint8List(0);
     result['phone'] = phone;
 
