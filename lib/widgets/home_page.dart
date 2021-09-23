@@ -27,6 +27,7 @@ class HomePage extends StatelessWidget {
             children: const [
               CurrentPoints(),
               LastRewards(),
+              AllRewards(),
             ],
           ),
         ),
@@ -136,16 +137,16 @@ class LastRewards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SizedBox(
-    height: 164,
+    height: 176,
     child: Card(
       child: Container(
-        padding: const EdgeInsets.all(15),
+        padding: const EdgeInsets.only(top: 15, left: 15, bottom: 5, right: 5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              margin: const EdgeInsets.only(bottom: 2.5, top: 2.5),
+              margin: const EdgeInsets.only(top: 2.5),
               child: Row(
                 children: [
                   const Icon(Icons.access_time),
@@ -164,7 +165,7 @@ class LastRewards extends StatelessWidget {
               child: Center(
                 child: Obx(() {
                   var manager = RockyRewardsManager.instance;
-                  var list = manager.rewardsList;
+                  var list = manager.rewardsList.reversed.toList();
                   var theme = Theme.of(context);
                   if (!manager.initialized.value) {
                     return ListView.builder(
@@ -203,19 +204,22 @@ class LastRewards extends StatelessWidget {
                                 height: 14,
                                 width: 100,
                               ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: theme.hintColor,
-                                      borderRadius: const BorderRadius.all(Radius.circular(20)),
+                              TextButton(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: theme.hintColor,
+                                        borderRadius: const BorderRadius.all(Radius.circular(20)),
+                                      ),
+                                      height: 14,
+                                      width: 50,
                                     ),
-                                    height: 14,
-                                    width: 50,
-                                  ),
-                                  const Icon(Icons.arrow_forward),
-                                ],
+                                    const Icon(Icons.arrow_forward),
+                                  ],
+                                ),
+                                onPressed: () {},
                               ),
                             ],
                           ),
@@ -246,6 +250,26 @@ class LastRewards extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    ),
+  );
+}
+
+class AllRewards extends StatelessWidget {
+  const AllRewards({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => Card(
+    child: ListTile(
+      leading: const Icon(
+        Icons.clear_all
+      ),
+      title: const Text('All Rewards'),
+      trailing: IconButton(
+        icon: const Icon(Icons.arrow_forward),
+        onPressed: () {
+          context.vRouter.to('/all_items');
+        },
       ),
     ),
   );

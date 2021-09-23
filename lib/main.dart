@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:rocky_rewards/utils/rocky_rewards.dart';
-import 'package:rocky_rewards/widgets/add_reward.dart';
-import 'package:rocky_rewards/widgets/home.dart';
+import 'package:rocky_rewards/widgets/add_reward_page.dart';
+import 'package:rocky_rewards/widgets/all_items_list_view.dart';
+import 'package:rocky_rewards/widgets/detailed_reward_view.dart';
+import 'package:rocky_rewards/widgets/home_page.dart';
 import 'package:vrouter/vrouter.dart';
 
 void main() {
@@ -27,8 +29,15 @@ class MyApp extends StatelessWidget {
 
     ),
     routes: [
-      VWidget(path: '/', widget: const HomePage()),
-      VWidget(path: '/add_reward', widget: AddReward(key: UniqueKey()),),
+      VWidget(
+        path: '/',
+        widget: const HomePage(),
+        stackedRoutes: [
+          VWidget(path: 'add_reward', widget: AddReward(key: GlobalKey()),),
+          VWidget(path: 'all_items', widget: const AllItemsListView()),
+          VWidget(path: 'detailed_view/:id', widget: const DetailedRewardView()),
+        ],
+      ),
     ],
   );
 }

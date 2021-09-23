@@ -18,12 +18,26 @@ dependencies:
   shimmer: ^2.0.0
   toggle_switch: ^1.2.0
   numberpicker: ^2.1.1
+  date_utils: ^0.2.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  flutter_launcher_icons: ^0.9.2
+  flutter_native_splash: ^1.2.3
   flutter_lints: ^1.0.0
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon.png"
+  adaptive_icon_background: 'assets/background.png'
+  adaptive_icon_foreground: 'assets/foreground.png'
+
+flutter_native_splash:
+  color: "#ffffff"
+  color_dark: "#303030"
+  image: assets/icon_red.png
 
 flutter:
   uses-material-design: true

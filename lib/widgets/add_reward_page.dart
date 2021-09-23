@@ -5,6 +5,7 @@ import 'package:rocky_rewards/utils/image_coder.dart';
 import 'package:signature/signature.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:vrouter/vrouter.dart';
+import 'package:date_utils/date_utils.dart' as date_utils;
 
 import '../utils/rocky_rewards.dart';
 
@@ -34,14 +35,34 @@ class AddReward extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: theme.brightness == Brightness.light
-            ? Image.asset('assets/icon_white.png', height: 41,)
-            : Image.asset('assets/icon_red.png', height: 41,),
         title: const Text('Rocky Rewards - Add'),
         centerTitle: true,
       ),
       body: ListView(
         children: [
+          Container(
+            padding: const EdgeInsets.all(15),
+            child: Center(
+              child: ListTile(
+                leading: const Icon(Icons.calendar_today),
+                title: Obx(() =>
+                  Text(dateTimeToString(controller.date.value))
+                ),
+                subtitle: const Text('Click to change'),
+                trailing: IconButton(
+                  icon: const Icon(Icons.arrow_forward),
+                  onPressed: () async {
+                    controller.date.value = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime.now().subtract(const Duration(days: 365)),
+                        lastDate: DateTime.now(),
+                    ) ?? DateTime.now();
+                  },
+                ),
+              ),
+            ),
+          ),
 
           Container(
             padding: const EdgeInsets.all(15),
@@ -63,7 +84,7 @@ class AddReward extends StatelessWidget {
           ),
 
           Container(
-            padding: const EdgeInsets.only(left: 10, bottom: 10, right: 10),
+            padding: const EdgeInsets.only(left: 20, bottom: 20, right: 20),
             child: Center(
               child: TextField(
                 controller: controller.groupNameController,
@@ -75,7 +96,7 @@ class AddReward extends StatelessWidget {
           ),
 
           Container(
-            padding: const EdgeInsets.only(left: 10, bottom: 10, right: 10),
+            padding: const EdgeInsets.only(left: 20, bottom: 20, right: 20),
             child: Center(
               child: TextField(
                 controller: controller.descriptionController,
@@ -108,9 +129,10 @@ class AddReward extends StatelessWidget {
             padding: const EdgeInsets.all(5),
             child: Center(
               child: ListTile(
-                title: Text(
-                  '${controller.hoursOrNumberOfGames} hour(s) or game(s)'
+                title: Obx(() => Text(
+                  '${controller.hoursOrNumberOfGames.value ?? ''} hour(s) or game(s)'
                       .trim().capitalizeFirst??"",
+                  ),
                 ),
                 subtitle: const Text(
                   "Leave empty if it doesn't apply",
@@ -230,9 +252,13 @@ class AddReward extends StatelessWidget {
       ),
     );
   }
+
+  String dateTimeToString(DateTime dateTime) =>
+      date_utils.DateUtils.formatFirstDay(dateTime);
 }
 
 class AddRewardController extends GetxController {
+  Rx<DateTime> date = DateTime.now().obs;
   Rx<RewardType> rewardType = RewardType.values.first.obs;
   TextEditingController groupNameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
