@@ -123,7 +123,6 @@ class CurrentPoints extends StatelessWidget {
               borderRadius: const BorderRadius.all(Radius.circular(20)),
             ),
             height: 11,
-            width: 25,
             margin: const EdgeInsets.only(bottom: 2.5, top: 2.5),
           ),
         ),

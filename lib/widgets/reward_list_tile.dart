@@ -110,7 +110,7 @@ class RewardListTile extends StatelessWidget {
         iconData = Icons.group;
         break;
     }
-    return Icon(iconData);
+    return Icon(iconData, color: const Color(0xFFCC0A2D),);
   }
 
   String dateTimeToString(DateTime dateTime) =>

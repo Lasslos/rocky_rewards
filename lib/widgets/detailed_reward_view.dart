@@ -92,13 +92,12 @@ class DetailedRewardView extends StatelessWidget {
             ),
           ),
 
-          Container(
+          if (reward.hoursOrNumberOfGames != null) Container(
             margin: const EdgeInsets.all(5),
             child: Center(
               child: ListTile(
                 title: Text(
-                  '${reward.hoursOrNumberOfGames ?? ''} Hour(s) or game(s)'
-                      .trim().capitalizeFirst??"",
+                  '${reward.hoursOrNumberOfGames} Hour(s) or game(s)'
                 ),
               ),
             ),
