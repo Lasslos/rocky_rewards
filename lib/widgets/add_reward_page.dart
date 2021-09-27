@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:numberpicker/numberpicker.dart';
+import 'package:rocky_rewards/main.dart';
 import 'package:rocky_rewards/utils/image_coder.dart';
 import 'package:signature/signature.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -239,7 +240,7 @@ class AddReward extends StatelessWidget {
                 child: Text(
                   'Please fill out every field.',
                   style: TextStyle(
-                      color: Color(0xFFCC0A2D),
+                      color: primary,
                       fontSize: 16
                   ),
                 ),

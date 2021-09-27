@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rocky_rewards/pdf_creator/pdf_creator.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:rocky_rewards/utils/rocky_rewards.dart';
 import 'package:rocky_rewards/widgets/reward_list_tile.dart';
 import 'package:vrouter/vrouter.dart';
+import 'package:date_utils/date_utils.dart' as date_utils;
+import 'package:month_picker_dialog/month_picker_dialog.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -24,10 +27,11 @@ class HomePage extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              CurrentPoints(),
-              LastRewards(),
-              AllRewards(),
+            children: [
+              const CurrentPoints(),
+              const LastRewards(),
+              const AllRewards(),
+              ExportMonth(),
             ],
           ),
         ),
@@ -44,6 +48,7 @@ class HomePage extends StatelessWidget {
 
 class CurrentPoints extends StatelessWidget {
   const CurrentPoints({Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) => Card(
@@ -129,14 +134,20 @@ class CurrentPoints extends StatelessWidget {
       ],
     );
   });
+
+
+  
 }
 
 class LastRewards extends StatelessWidget {
   const LastRewards({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-    height: 176,
+  Widget build(BuildContext context) => Container(
+    constraints: const BoxConstraints(
+      minHeight: 176,
+      maxHeight: 189,
+    ),
     child: Card(
       child: Container(
         padding: const EdgeInsets.only(top: 15, left: 15, bottom: 5, right: 5),
@@ -236,11 +247,11 @@ class LastRewards extends StatelessWidget {
                   }
                   return ListView.builder(
                     itemCount: itemCount,
+                    shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
-                      return RewardListTile(
+                      return VerticalListTile(
                         reward: list[index],
-                        scrollDirection: Axis.horizontal,
                       );
                     },
                   );
@@ -272,4 +283,80 @@ class AllRewards extends StatelessWidget {
       ),
     ),
   );
+}
+
+class ExportMonth extends StatelessWidget {
+  final ExportMonthDialogController controller = ExportMonthDialogController();
+  
+  ExportMonth({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => Card(
+    child: ListTile(
+      leading: const Icon(
+          Icons.import_export,
+      ),
+      title: const Text('Export Month'),
+      trailing: IconButton(
+        icon: const Icon(Icons.arrow_forward),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: _buildDialog,
+          );
+        },
+      ),
+    ),
+  );
+
+  Widget _buildDialog(BuildContext context) => AlertDialog(
+    title: const Text('Select a month'),
+    content: _buildDialogContent(context),
+    actions: [
+      TextButton(
+          onPressed: () async {
+            writeAndOpenPDF(
+              await createPDFBytes(controller.date.value),
+              'test.pdf',
+            );
+          },
+          child: const Text('Ok'),
+      ),
+      TextButton(
+        onPressed: () {
+          Navigator.pop(context);
+          },
+        child: const Text('Cancel'),
+      ),
+    ],
+  );
+  Widget _buildDialogContent(BuildContext context) => Container(
+    padding: const EdgeInsets.all(15),
+    child: Center(
+      child: ListTile(
+        leading: const Icon(Icons.calendar_today),
+        title: Obx(() =>
+            Text(dateTimeToString(controller.date.value))
+        ),
+        trailing: IconButton(
+          icon: const Icon(Icons.arrow_forward),
+          onPressed: () async {
+            controller.date.value = await showMonthPicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime.now().subtract(const Duration(days: 365)),
+              lastDate: DateTime.now(),
+            ) ?? DateTime.now();
+          },
+        ),
+      ),
+    ),
+  );
+
+  String dateTimeToString(DateTime dateTime) =>
+      date_utils.DateUtils.formatMonth(dateTime);
+}
+
+class ExportMonthDialogController extends GetxController {
+  final Rx<DateTime> date = DateTime(DateTime.now().year, DateTime.now().month).obs;
 }

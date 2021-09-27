@@ -18,7 +18,7 @@ class AllItemsListView extends StatelessWidget {
         lastMonth = month;
         items.add(_buildDateSeparator(context, month));
       }
-      items.add(RewardListTile(reward: reward,));
+      items.add(HorizontalRewardListTile(reward: reward,));
     }
 
     return Scaffold(

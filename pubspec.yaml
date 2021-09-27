@@ -13,13 +13,17 @@ dependencies:
   shared_preferences: ^2.0.8
   vrouter: ^1.2.0+12
   signature: ^4.1.1
-  rxdart: ^0.27.2
+  rxdart: ^0.26.0
   get: ^4.3.8
   shimmer: ^2.0.0
   toggle_switch: ^1.2.0
   numberpicker: ^2.1.1
   date_utils: ^0.2.0
-
+  path_provider: ^2.0.5
+  open_file: ^3.2.1
+  syncfusion_flutter_pdf: ^19.2.62-beta
+  month_picker_dialog: ^0.4.0
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -44,3 +48,4 @@ flutter:
   assets:
     - assets/icon_white.png
     - assets/icon_red.png
+    - assets/template_pdf.pdf

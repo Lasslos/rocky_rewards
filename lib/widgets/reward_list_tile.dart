@@ -1,25 +1,17 @@
 import 'package:date_utils/date_utils.dart' as date_utils;
 import 'package:flutter/material.dart';
+import 'package:rocky_rewards/main.dart';
 import 'package:rocky_rewards/utils/rocky_rewards.dart';
 import 'package:vrouter/vrouter.dart';
 
-class RewardListTile extends StatelessWidget {
+class HorizontalRewardListTile extends StatelessWidget {
   final RockyReward reward;
-  final Axis scrollDirection;
 
-  const RewardListTile(
-      {Key? key, required this.reward, this.scrollDirection = Axis.vertical})
-      : super(key: key);
+  const HorizontalRewardListTile(
+      {Key? key, required this.reward}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    if (scrollDirection == Axis.vertical) {
-      return _buildHorizontalTile(context);
-    }
-    return _buildVerticalTile(context);
-  }
-
-  Widget _buildHorizontalTile(BuildContext context) =>
+  Widget build(BuildContext context) =>
       ListTile(
         leading: _buildTypeSpecifiedIcon(),
         title: Text(
@@ -36,67 +28,16 @@ class RewardListTile extends StatelessWidget {
         ),
       );
 
-  Widget _buildVerticalTile(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(5),
-      child: Column(
-        children: [
-          Container(
-            height: 20,
-            margin: const EdgeInsets.only(bottom: 5, top: 5),
-            child: Text(reward.groupName, style: const TextStyle(fontSize: 20)),
-          ),
-          Container(
-            height: 14,
-            margin: const EdgeInsets.only(bottom: 2.5, top: 2.5),
-            child: Text(
-              reward.description,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 14,
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 14,
-            child: Text(
-              dateTimeToString(reward.date),
-              style: const TextStyle(
-                fontSize: 14,
-              ),
-            ),
-          ),
-          TextButton(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: const [
-                SizedBox(
-                  height: 14,
-                  child: Text(
-                    'View more',
-                    style: TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-                Icon(Icons.arrow_forward),
-              ],
-            ),
-            onPressed: () {
-              onPressed(context);
-            },
-          ),
-        ],
-      ),
-    );
-  }
 
   void onPressed(BuildContext context) {
     context.vRouter.to(
         '/detailed_view/'
             '${RockyRewardsManager.instance.rewardsList.indexOf(reward)}');
   }
+
+  String dateTimeToString(DateTime dateTime) =>
+      date_utils.DateUtils.formatFirstDay(dateTime);
+
   Icon _buildTypeSpecifiedIcon() {
     late IconData iconData;
     switch (reward.rewardType) {
@@ -110,10 +51,73 @@ class RewardListTile extends StatelessWidget {
         iconData = Icons.group;
         break;
     }
-    return Icon(iconData, color: const Color(0xFFCC0A2D),);
+    return Icon(iconData, color: primary,);
+  }
+}
+
+class VerticalListTile extends StatelessWidget {
+  final RockyReward reward;
+
+  const VerticalListTile({Key? key, required this.reward}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => Container(
+    margin: const EdgeInsets.all(5),
+    child: Column(
+      children: [
+        Container(
+          margin: const EdgeInsets.only(bottom: 5, top: 5),
+          child: Text(reward.groupName, style: const TextStyle(fontSize: 20)),
+        ),
+        Container(
+          margin: const EdgeInsets.only(bottom: 2.5, top: 2.5),
+          child: Text(
+            reward.description,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 14,
+            ),
+          ),
+        ),
+        SizedBox(
+          child: Text(
+            dateTimeToString(reward.date),
+            style: const TextStyle(
+              fontSize: 14,
+            ),
+          ),
+        ),
+        TextButton(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: const [
+              SizedBox(
+                height: 14,
+                child: Text(
+                  'View more',
+                  style: TextStyle(
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+              Icon(Icons.arrow_forward),
+            ],
+          ),
+          onPressed: () {
+            onPressed(context);
+          },
+        ),
+      ],
+    ),
+  );
+
+  void onPressed(BuildContext context) {
+    context.vRouter.to(
+        '/detailed_view/'
+            '${RockyRewardsManager.instance.rewardsList.indexOf(reward)}');
   }
 
   String dateTimeToString(DateTime dateTime) =>
       date_utils.DateUtils.formatFirstDay(dateTime);
-
 }

@@ -9,6 +9,8 @@ import 'package:rocky_rewards/widgets/home_page.dart';
 import 'package:rocky_rewards/widgets/loading_page.dart';
 import 'package:vrouter/vrouter.dart';
 
+const Color primary = Color(0xFFCC0A2D);
+
 void main() {
   runApp(const MyApp());
   RockyRewardsManager.instance;
@@ -22,13 +24,13 @@ class MyApp extends StatelessWidget {
     themeMode: ThemeMode.system,
     theme: ThemeData(
       brightness: Brightness.light,
-      primaryColor: const Color(0xFFCC0A2D),
-      primarySwatch: Colors.red
+      primaryColor: primary,
+      primarySwatch: Colors.red,
     ),
     darkTheme: ThemeData(
       brightness: Brightness.dark,
-      primaryColor: const Color(0xFFCC0A2D),
-        primarySwatch: Colors.red
+      primaryColor: primary,
+      primarySwatch: Colors.red,
 
     ),
     routes: [

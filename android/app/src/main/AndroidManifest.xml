@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.rocky_rewards">
+    package="eu.lh0.rocky_rewards">
    <application
         android:label="Rocky Rewards"
         android:icon="@mipmap/launcher_icon">
