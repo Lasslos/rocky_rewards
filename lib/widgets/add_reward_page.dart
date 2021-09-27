@@ -1,3 +1,4 @@
+import 'package:date_utils/date_utils.dart' as date_utils;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:numberpicker/numberpicker.dart';
@@ -6,7 +7,6 @@ import 'package:rocky_rewards/utils/image_coder.dart';
 import 'package:signature/signature.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:vrouter/vrouter.dart';
-import 'package:date_utils/date_utils.dart' as date_utils;
 
 import '../utils/rocky_rewards.dart';
 

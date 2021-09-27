@@ -1,9 +1,9 @@
+import 'package:date_utils/date_utils.dart' as date_utils;
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/string_extensions.dart';
 import 'package:rocky_rewards/utils/rocky_rewards.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:vrouter/vrouter.dart';
-import 'package:date_utils/date_utils.dart' as date_utils;
 
 class DetailedRewardView extends StatelessWidget {
   const DetailedRewardView({Key? key}) : super(key: key);

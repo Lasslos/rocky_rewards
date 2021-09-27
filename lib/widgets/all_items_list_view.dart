@@ -1,7 +1,7 @@
+import 'package:date_utils/date_utils.dart' as date_utils;
 import 'package:flutter/material.dart';
 import 'package:rocky_rewards/utils/rocky_rewards.dart';
 import 'package:rocky_rewards/widgets/reward_list_tile.dart';
-import 'package:date_utils/date_utils.dart' as date_utils;
 
 class AllItemsListView extends StatelessWidget {
   const AllItemsListView({Key? key}) : super(key: key);
