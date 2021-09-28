@@ -121,12 +121,25 @@ void _fillPage(DateTime month, String firstName, String lastName, String school,
     points[rewardType] = points[rewardType]! + reward.points;
   }
 
-  graphics.drawString(points[RewardType.volunteer]!.toString(), font,
-      bounds: _volunteerSumField);
-  graphics.drawString(points[RewardType.school]!.toString(), font,
-      bounds: _schoolSumField);
-  graphics.drawString(points[RewardType.community]!.toString(), font,
-      bounds: _communitySumField);
+  graphics.drawString(
+    points[RewardType.volunteer]!.toString(),
+    font,
+    bounds: _volunteerSumField,
+    format: format,
+  );
+  graphics.drawString(
+    points[RewardType.school]!.toString(),
+    font,
+    bounds: _schoolSumField,
+    format: format,
+  );
+  graphics.drawString(
+    points[RewardType.community]!.toString(),
+    font,
+    bounds: _communitySumField,
+    format: format,
+
+  );
 }
 
 void _fillRowInPage(PdfPage page, RockyReward reward, RowCoordinates row) {
@@ -177,6 +190,7 @@ void _fillRowInPage(PdfPage page, RockyReward reward, RowCoordinates row) {
     font,
     bounds:
         ColumnCoordinates(attendanceTypeX, attendanceTypeWidth).getRect(row),
+    format: format,
   );
   //Hours or number of games
   graphics.drawString(
