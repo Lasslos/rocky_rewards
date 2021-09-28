@@ -286,8 +286,6 @@ class AllRewards extends StatelessWidget {
 }
 
 class ExportMonth extends StatelessWidget {
-  final ExportMonthDialogController controller = ExportMonthDialogController();
-  
   ExportMonth({Key? key}) : super(key: key);
 
   @override
@@ -299,64 +297,24 @@ class ExportMonth extends StatelessWidget {
       title: const Text('Export Month'),
       trailing: IconButton(
         icon: const Icon(Icons.arrow_forward),
-        onPressed: () {
-          showDialog(
+        onPressed: () async {
+          var month = await showMonthPicker(
             context: context,
-            builder: _buildDialog,
+            initialDate: DateTime.now(),
+            firstDate: DateTime.now().subtract(const Duration(days: 365)),
+            lastDate: DateTime.now(),
+          );
+          if (month == null) {
+            return;
+          }
+          writeAndOpenPDF(
+            await createPDFBytes(month),
+            '${date_utils.DateUtils.apiDayFormat(month).substring(0, 7)}_output.pdf'
+                .replaceAll(' ', '_').toLowerCase(),
           );
         },
       ),
     ),
   );
 
-  Widget _buildDialog(BuildContext context) => AlertDialog(
-    title: const Text('Select a month'),
-    content: _buildDialogContent(context),
-    actions: [
-      TextButton(
-          onPressed: () async {
-            writeAndOpenPDF(
-              await createPDFBytes(controller.date.value),
-              'test.pdf',
-            );
-          },
-          child: const Text('Ok'),
-      ),
-      TextButton(
-        onPressed: () {
-          Navigator.pop(context);
-          },
-        child: const Text('Cancel'),
-      ),
-    ],
-  );
-  Widget _buildDialogContent(BuildContext context) => Container(
-    padding: const EdgeInsets.all(15),
-    child: Center(
-      child: ListTile(
-        leading: const Icon(Icons.calendar_today),
-        title: Obx(() =>
-            Text(dateTimeToString(controller.date.value))
-        ),
-        trailing: IconButton(
-          icon: const Icon(Icons.arrow_forward),
-          onPressed: () async {
-            controller.date.value = await showMonthPicker(
-              context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime.now().subtract(const Duration(days: 365)),
-              lastDate: DateTime.now(),
-            ) ?? DateTime.now();
-          },
-        ),
-      ),
-    ),
-  );
-
-  String dateTimeToString(DateTime dateTime) =>
-      date_utils.DateUtils.formatMonth(dateTime);
-}
-
-class ExportMonthDialogController extends GetxController {
-  final Rx<DateTime> date = DateTime(DateTime.now().year, DateTime.now().month).obs;
 }
