@@ -21,35 +21,37 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => VRouter(
-    themeMode: ThemeMode.system,
-    theme: ThemeData(
-      brightness: Brightness.light,
-      primaryColor: primary,
-      primarySwatch: Colors.red,
-    ),
-    darkTheme: ThemeData(
-      brightness: Brightness.dark,
-      primaryColor: primary,
-      primarySwatch: Colors.red,
-
-    ),
-    routes: [
-      VWidget(
-        path: '/',
-        widget: const HomePage(),
-        stackedRoutes: [
-          VWidget.builder(
-            path: 'add_reward',
-            builder: (BuildContext context, VRouterData data) =>
-                LoadingBuilder(
-                  builder: (BuildContext context) =>
-                      SynchronousFuture(AddReward(key: GlobalKey()),),
+        themeMode: ThemeMode.system,
+        theme: ThemeData(
+          brightness: Brightness.light,
+          primaryColor: primary,
+          primarySwatch: Colors.red,
+        ),
+        darkTheme: ThemeData(
+          brightness: Brightness.dark,
+          primaryColor: primary,
+          primarySwatch: Colors.red,
+        ),
+        routes: [
+          VWidget(
+            path: '/',
+            widget: const HomePage(),
+            stackedRoutes: [
+              VWidget.builder(
+                path: 'add_reward',
+                builder: (BuildContext context, VRouterData data) =>
+                    LoadingBuilder(
+                  builder: (BuildContext context) => SynchronousFuture(
+                    AddReward(key: GlobalKey()),
+                  ),
                 ),
+              ),
+              VWidget(path: 'all_items', widget: const AllItemsListView()),
+              VWidget(
+                  path: 'detailed_view/:id',
+                  widget: const DetailedRewardView()),
+            ],
           ),
-          VWidget(path: 'all_items', widget: const AllItemsListView()),
-          VWidget(path: 'detailed_view/:id', widget: const DetailedRewardView()),
         ],
-      ),
-    ],
-  );
+      );
 }

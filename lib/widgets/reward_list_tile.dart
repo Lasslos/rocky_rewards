@@ -7,12 +7,11 @@ import 'package:vrouter/vrouter.dart';
 class HorizontalRewardListTile extends StatelessWidget {
   final RockyReward reward;
 
-  const HorizontalRewardListTile(
-      {Key? key, required this.reward}) : super(key: key);
+  const HorizontalRewardListTile({Key? key, required this.reward})
+      : super(key: key);
 
   @override
-  Widget build(BuildContext context) =>
-      ListTile(
+  Widget build(BuildContext context) => ListTile(
         leading: _buildTypeSpecifiedIcon(),
         title: Text(
           reward.groupName,
@@ -28,11 +27,9 @@ class HorizontalRewardListTile extends StatelessWidget {
         ),
       );
 
-
   void onPressed(BuildContext context) {
-    context.vRouter.to(
-        '/detailed_view/'
-            '${RockyRewardsManager.instance.rewardsList.indexOf(reward)}');
+    context.vRouter.to('/detailed_view/'
+        '${RockyRewardsManager.instance.rewardsList.indexOf(reward)}');
   }
 
   String dateTimeToString(DateTime dateTime) =>
@@ -51,7 +48,10 @@ class HorizontalRewardListTile extends StatelessWidget {
         iconData = Icons.group;
         break;
     }
-    return Icon(iconData, color: primary,);
+    return Icon(
+      iconData,
+      color: primary,
+    );
   }
 }
 
@@ -62,60 +62,60 @@ class VerticalListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    margin: const EdgeInsets.all(5),
-    child: Column(
-      children: [
-        Container(
-          margin: const EdgeInsets.only(bottom: 5, top: 5),
-          child: Text(reward.groupName, style: const TextStyle(fontSize: 20)),
-        ),
-        Container(
-          margin: const EdgeInsets.only(bottom: 2.5, top: 2.5),
-          child: Text(
-            reward.description,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 14,
+        margin: const EdgeInsets.all(5),
+        child: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(bottom: 5, top: 5),
+              child:
+                  Text(reward.groupName, style: const TextStyle(fontSize: 20)),
             ),
-          ),
-        ),
-        SizedBox(
-          child: Text(
-            dateTimeToString(reward.date),
-            style: const TextStyle(
-              fontSize: 14,
-            ),
-          ),
-        ),
-        TextButton(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: const [
-              SizedBox(
-                height: 14,
-                child: Text(
-                  'View more',
-                  style: TextStyle(
-                    fontSize: 14,
-                  ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 2.5, top: 2.5),
+              child: Text(
+                reward.description,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 14,
                 ),
               ),
-              Icon(Icons.arrow_forward),
-            ],
-          ),
-          onPressed: () {
-            onPressed(context);
-          },
+            ),
+            SizedBox(
+              child: Text(
+                dateTimeToString(reward.date),
+                style: const TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+            ),
+            TextButton(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: const [
+                  SizedBox(
+                    height: 14,
+                    child: Text(
+                      'View more',
+                      style: TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                  Icon(Icons.arrow_forward),
+                ],
+              ),
+              onPressed: () {
+                onPressed(context);
+              },
+            ),
+          ],
         ),
-      ],
-    ),
-  );
+      );
 
   void onPressed(BuildContext context) {
-    context.vRouter.to(
-        '/detailed_view/'
-            '${RockyRewardsManager.instance.rewardsList.indexOf(reward)}');
+    context.vRouter.to('/detailed_view/'
+        '${RockyRewardsManager.instance.rewardsList.indexOf(reward)}');
   }
 
   String dateTimeToString(DateTime dateTime) =>

@@ -16,19 +16,33 @@ class RockyReward {
   MyImage signature;
   String phone;
 
-  RockyReward(this.date, this.rewardType, this.groupName, this.description, this.attendance, this.hoursOrNumberOfGames, this.points, this.signature, this.phone);
+  RockyReward(
+      this.date,
+      this.rewardType,
+      this.groupName,
+      this.description,
+      this.attendance,
+      this.hoursOrNumberOfGames,
+      this.points,
+      this.signature,
+      this.phone);
 
   static Future<RockyReward> fromJSON(Map<String, dynamic> json) async {
     var date = _getFromJSON<DateTime>(json, 'date', DateTime.now());
-    var rewardType = RewardType.values[_getFromJSON<int>(json, 'rewardType', 0)];
+    var rewardType =
+        RewardType.values[_getFromJSON<int>(json, 'rewardType', 0)];
     var groupName = _getFromJSON<String>(json, 'groupName', '');
     var description = _getFromJSON(json, 'description', '');
-    var attendance = AttendanceType.values[_getFromJSON<int>(json, 'attendance', 0)];
-    var hoursOrNumbersOfGames = _getFromJSON<int?>(json, 'hoursOrNumbersOfGames', null);
+    var attendance =
+        AttendanceType.values[_getFromJSON<int>(json, 'attendance', 0)];
+    var hoursOrNumbersOfGames =
+        _getFromJSON<int?>(json, 'hoursOrNumbersOfGames', null);
     var points = _getFromJSON<int>(json, 'points', 1);
-    var signature = MyImage.fromString(_getFromJSON<String>(json, 'signature', ''));
+    var signature =
+        MyImage.fromString(_getFromJSON<String>(json, 'signature', ''));
     var phone = _getFromJSON<String>(json, 'phone', '012-345-6789');
-    return RockyReward(date, rewardType, groupName, description, attendance, hoursOrNumbersOfGames, points, signature, phone);
+    return RockyReward(date, rewardType, groupName, description, attendance,
+        hoursOrNumbersOfGames, points, signature, phone);
   }
 
   static T _getFromJSON<T>(Map<String, dynamic> json, String path, T fallback) {
@@ -57,12 +71,8 @@ class RockyReward {
   }
 }
 
-enum RewardType {
-  volunteer, school, community
-}
-enum AttendanceType {
-  participant, spectator
-}
+enum RewardType { volunteer, school, community }
+enum AttendanceType { participant, spectator }
 
 class RockyRewardsManager {
   static RockyRewardsManager instance = RockyRewardsManager._private();
@@ -88,6 +98,7 @@ class RockyRewardsManager {
     await Future.delayed(const Duration(seconds: 3));
     initialized.value = true;
   }
+
   Future<void> save() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     List<String> rewardsList = [];

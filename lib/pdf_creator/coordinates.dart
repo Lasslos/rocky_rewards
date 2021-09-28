@@ -17,8 +17,8 @@ class RowCoordinates {
 }
 
 Rect _getRect(ColumnCoordinates column, RowCoordinates row) => Rect.fromLTWH(
-  column.x, 
-  row.y, 
-  column.width,
-  row.height,
-);
+      column.x,
+      row.y,
+      column.width,
+      row.height,
+    );

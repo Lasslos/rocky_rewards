@@ -40,33 +40,34 @@ class AddReward extends StatelessWidget {
   }
 
   Widget _buildDateSelector(BuildContext context) => Container(
-    padding: const EdgeInsets.all(15),
-    child: Center(
-      child: ListTile(
-        leading: const Icon(Icons.calendar_today),
-        title: Obx(() =>
-            Text(dateTimeToString(controller.date.value))
+        padding: const EdgeInsets.all(15),
+        child: Center(
+          child: ListTile(
+            leading: const Icon(Icons.calendar_today),
+            title: Obx(() => Text(dateTimeToString(controller.date.value))),
+            subtitle: const Text('Click to change'),
+            trailing: IconButton(
+              icon: const Icon(Icons.arrow_forward),
+              onPressed: () async {
+                controller.date.value = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate:
+                          DateTime.now().subtract(const Duration(days: 365)),
+                      lastDate: DateTime.now(),
+                    ) ??
+                    DateTime.now();
+              },
+            ),
+          ),
         ),
-        subtitle: const Text('Click to change'),
-        trailing: IconButton(
-          icon: const Icon(Icons.arrow_forward),
-          onPressed: () async {
-            controller.date.value = await showDatePicker(
-              context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime.now().subtract(const Duration(days: 365)),
-              lastDate: DateTime.now(),
-            ) ?? DateTime.now();
-          },
-        ),
-      ),
-    ),
-  );
+      );
 
   Widget _buildRewardsTypeSelector(BuildContext context) {
     List<String> rewardTypeNameList = [];
     for (var rewardType in RewardType.values) {
-      var name = rewardType.toString()
+      var name = rewardType
+          .toString()
           .replaceFirst('${rewardType.runtimeType.toString()}.', '');
       name = name.replaceRange(0, 1, name[0].toUpperCase());
       rewardTypeNameList.add(name);
@@ -76,64 +77,54 @@ class AddReward extends StatelessWidget {
       padding: const EdgeInsets.all(15),
       child: Center(
         child: ToggleSwitch(
-          minWidth: (MediaQuery
-              .of(context)
-              .size
-              .width - 50) / 3,
+          minWidth: (MediaQuery.of(context).size.width - 50) / 3,
           animate: true,
           totalSwitches: RewardType.values.length,
           labels: rewardTypeNameList,
           onToggle: (index) {
             controller.rewardType.value = RewardType.values[index];
           },
-
         ),
       ),
     );
   }
 
   Widget _buildGroupNameTextField(BuildContext context) => Container(
-    padding: const EdgeInsets.only(left: 20, bottom: 20, right: 20),
-    child: Center(
-      child: TextField(
-        controller: controller.groupNameController,
-        decoration: const InputDecoration(
-            labelText: "Name of Organization, Team or Club"
+        padding: const EdgeInsets.only(left: 20, bottom: 20, right: 20),
+        child: Center(
+          child: TextField(
+            controller: controller.groupNameController,
+            decoration: const InputDecoration(
+                labelText: "Name of Organization, Team or Club"),
+          ),
         ),
-      ),
-    ),
-  );
+      );
 
   Widget _buildDescriptionTextField(BuildContext context) => Container(
-    padding: const EdgeInsets.only(left: 20, bottom: 20, right: 20),
-    child: Center(
-      child: TextField(
-        controller: controller.descriptionController,
-        decoration: const InputDecoration(
-            labelText: "Description"
+        padding: const EdgeInsets.only(left: 20, bottom: 20, right: 20),
+        child: Center(
+          child: TextField(
+            controller: controller.descriptionController,
+            decoration: const InputDecoration(labelText: "Description"),
+          ),
         ),
-      ),
-    ),
-  );
+      );
 
   Widget _buildAttendanceTypeSelector(BuildContext context) {
     List<String> attendanceTypeNameList = [];
     for (var attendanceType in AttendanceType.values) {
-      var name = attendanceType.toString()
+      var name = attendanceType
+          .toString()
           .replaceFirst('${attendanceType.runtimeType.toString()}.', '');
       name = name.replaceRange(0, 1, name[0].toUpperCase());
       attendanceTypeNameList.add(name);
     }
 
-
     return Container(
       padding: const EdgeInsets.all(5),
       child: Center(
         child: ToggleSwitch(
-          minWidth: (MediaQuery
-              .of(context)
-              .size
-              .width - 50) / 2,
+          minWidth: (MediaQuery.of(context).size.width - 50) / 2,
           animate: true,
           totalSwitches: AttendanceType.values.length,
           labels: attendanceTypeNameList,
@@ -157,31 +148,30 @@ class AddReward extends StatelessWidget {
             Column(
               children: [
                 Text('Hour(s) or game(s):', style: theme.textTheme.subtitle1),
-                Obx(() =>
-                    NumberPicker(
-                      minValue: 0,
-                      value: controller.hoursOrNumberOfGames.value ?? 1,
-                      maxValue: 127,
-                      onChanged: (int value) {
-                        controller.hoursOrNumberOfGames.value = value;
-                      },
-                    ),
+                Obx(
+                  () => NumberPicker(
+                    minValue: 0,
+                    value: controller.hoursOrNumberOfGames.value ?? 1,
+                    maxValue: 127,
+                    onChanged: (int value) {
+                      controller.hoursOrNumberOfGames.value = value;
+                    },
+                  ),
                 ),
               ],
             ),
-
             Column(
               children: [
                 Text('Points:', style: theme.textTheme.subtitle1),
-                Obx(() =>
-                    NumberPicker(
-                      minValue: 0,
-                      value: controller.points.value,
-                      maxValue: 127,
-                      onChanged: (int value) {
-                        controller.points.value = value;
-                      },
-                    ),
+                Obx(
+                  () => NumberPicker(
+                    minValue: 0,
+                    value: controller.points.value,
+                    maxValue: 127,
+                    onChanged: (int value) {
+                      controller.points.value = value;
+                    },
+                  ),
                 ),
               ],
             )
@@ -195,81 +185,76 @@ class AddReward extends StatelessWidget {
     var theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-      child: Text(
-          'Signature of responsible person', style: theme.textTheme.subtitle1),
+      child: Text('Signature of responsible person',
+          style: theme.textTheme.subtitle1),
     );
   }
 
   Widget _buildSignatureField(BuildContext context) => Container(
-    decoration: const BoxDecoration(
-      borderRadius: BorderRadius.all(Radius.circular(20)),
-      color: Colors.grey,
-    ),
-    margin: const EdgeInsets.all(10),
-    padding: const EdgeInsets.all(10),
-    child: Signature(
-      controller: controller.signatureController,
-      height: 250,
-    ),
-  );
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+          color: Colors.grey,
+        ),
+        margin: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
+        child: Signature(
+          controller: controller.signatureController,
+          height: 250,
+        ),
+      );
 
   Widget _buildPhoneNumberTextField(BuildContext context) => Container(
-    padding: const EdgeInsets.only(left: 10, bottom: 10, right: 10),
-    child: Center(
-      child: TextField(
-        controller: controller.phoneController,
-        decoration: const InputDecoration(
-            labelText: "Phone number of responsible person"
+        padding: const EdgeInsets.only(left: 10, bottom: 10, right: 10),
+        child: Center(
+          child: TextField(
+            controller: controller.phoneController,
+            decoration: const InputDecoration(
+                labelText: "Phone number of responsible person"),
+          ),
         ),
-      ),
-    ),
-  );
+      );
 
   Widget _buildSubmitButton(BuildContext context) => TextButton(
-    onPressed: () async {
-      if (controller.groupNameController.text.isEmpty ||
-          controller.descriptionController.text.isEmpty ||
-          controller.phoneController.text.isEmpty||
-          controller.signatureController.isEmpty
-      ) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: SizedBox(
-              height: 25,
-              child: Center(
-                child: Text(
-                  'Please fill out every field.',
-                  style: TextStyle(
-                      color: primary,
-                      fontSize: 16
+        onPressed: () async {
+          if (controller.groupNameController.text.isEmpty ||
+              controller.descriptionController.text.isEmpty ||
+              controller.phoneController.text.isEmpty ||
+              controller.signatureController.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: SizedBox(
+                  height: 25,
+                  child: Center(
+                    child: Text(
+                      'Please fill out every field.',
+                      style: TextStyle(color: primary, fontSize: 16),
+                    ),
                   ),
                 ),
               ),
+            );
+            return;
+          }
+          RockyRewardsManager.instance.addReward(
+            RockyReward(
+              DateTime.now(),
+              controller.rewardType.value,
+              controller.groupNameController.text,
+              controller.descriptionController.text,
+              controller.attendanceType.value,
+              controller.hoursOrNumberOfGames.value,
+              controller.points.value,
+              MyImage((await controller.signatureController.toPngBytes())!),
+              controller.phoneController.text,
             ),
-          ),
-        );
-        return;
-      }
-      RockyRewardsManager.instance.addReward(
-        RockyReward(
-          DateTime.now(),
-          controller.rewardType.value,
-          controller.groupNameController.text,
-          controller.descriptionController.text,
-          controller.attendanceType.value,
-          controller.hoursOrNumberOfGames.value,
-          controller.points.value,
-          MyImage((await controller.signatureController.toPngBytes())!),
-          controller.phoneController.text,
+          );
+          context.vRouter.to('/');
+        },
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          child: const Text('Submit'),
         ),
       );
-      context.vRouter.to('/');
-    },
-    child: Container(
-      padding: const EdgeInsets.all(10),
-      child: const Text('Submit'),
-    ),
-  );
 
   String dateTimeToString(DateTime dateTime) =>
       date_utils.DateUtils.formatFirstDay(dateTime);

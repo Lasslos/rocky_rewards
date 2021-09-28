@@ -36,7 +36,8 @@ const ColumnCoordinates _groupNameColumn = ColumnCoordinates(159, 98);
 const ColumnCoordinates _description = ColumnCoordinates(258, 208);
 const ColumnCoordinates _attendanceTypeColumn = ColumnCoordinates(467, 44);
 const int _numberOfAttendanceTypeColumns = 2;
-const ColumnCoordinates _hoursOrNumberOfGamesColumn = ColumnCoordinates(512, 36);
+const ColumnCoordinates _hoursOrNumberOfGamesColumn =
+    ColumnCoordinates(512, 36);
 const ColumnCoordinates _pointsColumn = ColumnCoordinates(549, 25);
 const ColumnCoordinates _signatureColumn = ColumnCoordinates(575, 90);
 const ColumnCoordinates _phoneColumn = ColumnCoordinates(669, 93);
@@ -48,13 +49,15 @@ const Rect _communitySumField = Rect.fromLTWH(133, 485, 25, 18);
 Future<ByteData> _getTemplateBytes() async {
   return await rootBundle.load('assets/template_pdf.pdf');
 }
+
 Future<List<int>> createPDFBytes(DateTime month) async {
   if (!RockyRewardsManager.instance.initialized.value) {
     await RockyRewardsManager.instance.initialized.stream.first;
   }
-  var list = RockyRewardsManager.instance.rewardsList.where((reward) =>
-  reward.date.year == month.year && reward.date.month == month.month
-  ).toList(growable: false);
+  var list = RockyRewardsManager.instance.rewardsList
+      .where((reward) =>
+          reward.date.year == month.year && reward.date.month == month.month)
+      .toList(growable: false);
 
   var templateBytes = await _getTemplateBytes();
   var template = PdfDocument(
@@ -80,26 +83,29 @@ Future<List<int>> createPDFBytes(DateTime month) async {
       page,
     );
   }
+  if (numberOfPages == 0) {
+    var page = document.pages.add();
+    page.graphics.drawPdfTemplate(template, Offset.zero);
+  }
 
   List<int> resultBytes = document.save();
   document.dispose();
   return resultBytes;
 }
-void _fillPage(DateTime month, String firstName, String lastName,
-    String school, List<RockyReward> rewards, PdfPage page) {
+
+void _fillPage(DateTime month, String firstName, String lastName, String school,
+    List<RockyReward> rewards, PdfPage page) {
   var font = PdfStandardFont(PdfFontFamily.helvetica, 12);
   var format = PdfStringFormat(
       alignment: PdfTextAlignment.center,
-      lineAlignment: PdfVerticalAlignment.middle
-  );
+      lineAlignment: PdfVerticalAlignment.middle);
   var graphics = page.graphics;
 
   graphics.drawString(firstName, font, bounds: _firstNameField, format: format);
   graphics.drawString(lastName, font, bounds: _lastNameField, format: format);
   graphics.drawString(school, font, bounds: _schoolField, format: format);
-  graphics.drawString(
-      date_utils.DateUtils.formatMonth(month),
-      font, bounds: _monthField, format: format);
+  graphics.drawString(date_utils.DateUtils.formatMonth(month), font,
+      bounds: _monthField, format: format);
 
   for (int i = 0; i < rewards.length && i < 17; i++) {
     _fillRowInPage(page, rewards[i], _rowList[i]);
@@ -115,17 +121,20 @@ void _fillPage(DateTime month, String firstName, String lastName,
     points[rewardType] = points[rewardType]! + reward.points;
   }
 
-  graphics.drawString(points[RewardType.volunteer]!.toString(), font, bounds: _volunteerSumField);
-  graphics.drawString(points[RewardType.school]!.toString(), font, bounds: _schoolSumField);
-  graphics.drawString(points[RewardType.community]!.toString(), font, bounds: _communitySumField);
+  graphics.drawString(points[RewardType.volunteer]!.toString(), font,
+      bounds: _volunteerSumField);
+  graphics.drawString(points[RewardType.school]!.toString(), font,
+      bounds: _schoolSumField);
+  graphics.drawString(points[RewardType.community]!.toString(), font,
+      bounds: _communitySumField);
 }
+
 void _fillRowInPage(PdfPage page, RockyReward reward, RowCoordinates row) {
   var graphics = page.graphics;
   var font = PdfStandardFont(PdfFontFamily.timesRoman, 12);
   var format = PdfStringFormat(
       alignment: PdfTextAlignment.center,
-      lineAlignment: PdfVerticalAlignment.middle
-  );
+      lineAlignment: PdfVerticalAlignment.middle);
 
   //Date
   graphics.drawString(
@@ -136,8 +145,8 @@ void _fillRowInPage(PdfPage page, RockyReward reward, RowCoordinates row) {
   );
   //RewardTypeColumn has multiple sub-columns, calculating which one it is
   var rewardTypeWidth = _rewardTypeColumn.width / _numberOfRewardTypeColumns;
-  var rewardTypeX = _rewardTypeColumn.x +
-      (rewardTypeWidth * reward.rewardType.index);
+  var rewardTypeX =
+      _rewardTypeColumn.x + (rewardTypeWidth * reward.rewardType.index);
   graphics.drawString(
     'X',
     font,
@@ -159,13 +168,15 @@ void _fillRowInPage(PdfPage page, RockyReward reward, RowCoordinates row) {
     format: format,
   );
   //Attendance has multiple sub-columns, calculating which one it is
-  var attendanceTypeWidth = _attendanceTypeColumn.width / _numberOfAttendanceTypeColumns;
-  var attendanceTypeX = _attendanceTypeColumn.x +
-      (attendanceTypeWidth * reward.attendance.index);
+  var attendanceTypeWidth =
+      _attendanceTypeColumn.width / _numberOfAttendanceTypeColumns;
+  var attendanceTypeX =
+      _attendanceTypeColumn.x + (attendanceTypeWidth * reward.attendance.index);
   graphics.drawString(
     'X',
     font,
-    bounds: ColumnCoordinates(attendanceTypeX, attendanceTypeWidth).getRect(row),
+    bounds:
+        ColumnCoordinates(attendanceTypeX, attendanceTypeWidth).getRect(row),
   );
   //Hours or number of games
   graphics.drawString(
@@ -220,10 +231,10 @@ Rect _getEqualRatioRect(Rect constrain, double ratio) {
     top = 0;
   }
   return Rect.fromLTWH(
-     constrain.left + left, 
-     constrain.top + top, 
-     width, 
-     height,
+    constrain.left + left,
+    constrain.top + top,
+    width,
+    height,
   );
 }
 

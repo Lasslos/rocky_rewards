@@ -5,10 +5,11 @@ class LoadingBuilder extends StatelessWidget {
   final Future<Widget> Function(BuildContext context) builder;
   final Duration minimumLoadingTime;
 
-  const LoadingBuilder({
-    Key? key,
-    required this.builder,
-    this.minimumLoadingTime = const Duration(seconds: 1)}) : super(key: key);
+  const LoadingBuilder(
+      {Key? key,
+      required this.builder,
+      this.minimumLoadingTime = const Duration(seconds: 1)})
+      : super(key: key);
 
   Future<Widget> _buildChild(BuildContext context) async {
     var futureWidget = builder(context);
@@ -35,7 +36,7 @@ class LoadingBuilder extends StatelessWidget {
         body: Center(
           child: CircularProgressIndicator(),
         ),
-      ), 
+      ),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasError) {
           return const Scaffold(

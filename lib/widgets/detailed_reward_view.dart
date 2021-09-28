@@ -31,7 +31,6 @@ class DetailedRewardView extends StatelessWidget {
               ),
             ),
           ),
-
           Container(
             margin: const EdgeInsets.all(15),
             child: Center(
@@ -39,14 +38,14 @@ class DetailedRewardView extends StatelessWidget {
                 minWidth: (MediaQuery.of(context).size.width - 50),
                 totalSwitches: 1,
                 labels: [
-                  reward.rewardType.toString()
+                  reward.rewardType
+                      .toString()
                       .replaceFirst('$RewardType.', '')
                       .capitalizeFirst!
                 ],
               ),
             ),
           ),
-
           Container(
             margin: const EdgeInsets.only(left: 20, bottom: 20, right: 20),
             child: Center(
@@ -59,7 +58,6 @@ class DetailedRewardView extends StatelessWidget {
               ),
             ),
           ),
-
           Container(
             margin: const EdgeInsets.only(left: 20, bottom: 20, right: 20),
             child: Center(
@@ -72,44 +70,42 @@ class DetailedRewardView extends StatelessWidget {
               ),
             ),
           ),
-
           Container(
             margin: const EdgeInsets.all(5),
             child: Center(
               child: ToggleSwitch(
-                minWidth: (MediaQuery
-                    .of(context)
-                    .size
-                    .width - 50),
+                minWidth: (MediaQuery.of(context).size.width - 50),
                 animate: true,
                 totalSwitches: 1,
                 labels: [
-                  reward.attendance.toString()
+                  reward.attendance
+                      .toString()
                       .replaceFirst('$AttendanceType.', '')
                       .capitalizeFirst!,
                 ],
               ),
             ),
           ),
-
-          if (reward.hoursOrNumberOfGames != null) Container(
-            margin: const EdgeInsets.all(5),
-            child: Center(
-              child: ListTile(
-                title: Text(
-                  '${reward.hoursOrNumberOfGames} Hour(s) or game(s)'
+          if (reward.hoursOrNumberOfGames != null)
+            Container(
+              margin: const EdgeInsets.all(5),
+              child: Center(
+                child: ListTile(
+                  title:
+                      Text('${reward.hoursOrNumberOfGames} Hour(s) or game(s)'),
                 ),
               ),
             ),
-          ),
-
           Container(
-            margin: const EdgeInsets.only(top: 5, left: 20, right: 20, bottom: 20),
-            child: Text('${reward.points} Point(s)', style: theme.textTheme.subtitle1),
+            margin:
+                const EdgeInsets.only(top: 5, left: 20, right: 20, bottom: 20),
+            child: Text('${reward.points} Point(s)',
+                style: theme.textTheme.subtitle1),
           ),
           Container(
             margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-            child: Text('Signature of responsible person', style: theme.textTheme.subtitle1),
+            child: Text('Signature of responsible person',
+                style: theme.textTheme.subtitle1),
           ),
           Container(
             decoration: const BoxDecoration(
@@ -119,7 +115,6 @@ class DetailedRewardView extends StatelessWidget {
             margin: const EdgeInsets.all(10),
             child: reward.signature.getWidget(),
           ),
-
           Container(
             margin: const EdgeInsets.only(left: 10, bottom: 10, right: 10),
             child: Center(

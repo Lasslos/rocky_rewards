@@ -18,40 +18,41 @@ class AllItemsListView extends StatelessWidget {
         lastMonth = month;
         items.add(_buildDateSeparator(context, month));
       }
-      items.add(HorizontalRewardListTile(reward: reward,));
+      items.add(HorizontalRewardListTile(
+        reward: reward,
+      ));
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Rocky Rewards - All'),
-      ),
-      body: ListView(
-        children: items,
-      )
-    );
+        appBar: AppBar(
+          title: const Text('Rocky Rewards - All'),
+        ),
+        body: ListView(
+          children: items,
+        ));
   }
 
   Widget _buildDateSeparator(BuildContext context, DateTime date) => Container(
-    padding: const EdgeInsets.all(15),
-    child: Row(
-      children: [
-        Expanded(
-          child: Container(
-            color: Theme.of(context).cardColor,
-            height: 1,
-          ),
+        padding: const EdgeInsets.all(15),
+        child: Row(
+          children: [
+            Expanded(
+              child: Container(
+                color: Theme.of(context).cardColor,
+                height: 1,
+              ),
+            ),
+            Text(
+              '   ${date_utils.DateUtils.formatMonth(date)}   ',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            Expanded(
+              child: Container(
+                color: Theme.of(context).cardColor,
+                height: 1,
+              ),
+            ),
+          ],
         ),
-        Text(
-          '   ${date_utils.DateUtils.formatMonth(date)}   ',
-          style: Theme.of(context).textTheme.headline6,
-        ),
-        Expanded(
-          child: Container(
-            color: Theme.of(context).cardColor,
-            height: 1,
-          ),
-        ),
-      ],
-    ),
-  );
+      );
 }
