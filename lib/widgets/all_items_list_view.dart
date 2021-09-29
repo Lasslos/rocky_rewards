@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:rocky_rewards/utils/rocky_rewards.dart';
 import 'package:rocky_rewards/widgets/reward_list_tile.dart';
 
-class AllItemsListView extends StatelessWidget {
-  const AllItemsListView({Key? key}) : super(key: key);
+class AllRewardsListView extends StatelessWidget {
+  const AllRewardsListView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

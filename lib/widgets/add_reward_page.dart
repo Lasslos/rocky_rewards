@@ -6,7 +6,6 @@ import 'package:rocky_rewards/main.dart';
 import 'package:rocky_rewards/utils/image_coder.dart';
 import 'package:signature/signature.dart';
 import 'package:toggle_switch/toggle_switch.dart';
-import 'package:vrouter/vrouter.dart';
 
 import '../utils/rocky_rewards.dart';
 
@@ -248,7 +247,7 @@ class AddReward extends StatelessWidget {
               controller.phoneController.text,
             ),
           );
-          context.vRouter.to('/');
+          Navigator.pop(context);
         },
         child: Container(
           padding: const EdgeInsets.all(10),

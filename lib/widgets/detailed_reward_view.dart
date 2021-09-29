@@ -3,16 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/string_extensions.dart';
 import 'package:rocky_rewards/utils/rocky_rewards.dart';
 import 'package:toggle_switch/toggle_switch.dart';
-import 'package:vrouter/vrouter.dart';
 
 class DetailedRewardView extends StatelessWidget {
-  const DetailedRewardView({Key? key}) : super(key: key);
+  final RockyReward reward;
+
+  const DetailedRewardView({Key? key, required this.reward}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    int id = int.tryParse(context.vRouter.pathParameters['id'] ?? '0') ?? 0;
-    RockyReward reward = RockyRewardsManager.instance.rewardsList[id];
-
     var theme = Theme.of(context);
 
     return Scaffold(

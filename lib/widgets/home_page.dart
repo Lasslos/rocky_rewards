@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rocky_rewards/pdf_creator/pdf_creator.dart';
+import 'package:rocky_rewards/widgets/add_reward_page.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:rocky_rewards/utils/rocky_rewards.dart';
 import 'package:rocky_rewards/widgets/reward_list_tile.dart';
-import 'package:vrouter/vrouter.dart';
 import 'package:date_utils/date_utils.dart' as date_utils;
 import 'package:month_picker_dialog/month_picker_dialog.dart';
+
+import 'all_items_list_view.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -44,7 +46,9 @@ class HomePage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.vRouter.to('/add_reward');
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context) => AddReward(),
+          ));
         },
         child: const Icon(Icons.add),
       ),
@@ -297,7 +301,9 @@ class AllRewards extends StatelessWidget {
           trailing: IconButton(
             icon: const Icon(Icons.arrow_forward),
             onPressed: () {
-              context.vRouter.to('/all_items');
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) => const AllRewardsListView(),
+              ));
             },
           ),
         ),

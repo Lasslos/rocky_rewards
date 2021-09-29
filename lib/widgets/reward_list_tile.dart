@@ -2,7 +2,9 @@ import 'package:date_utils/date_utils.dart' as date_utils;
 import 'package:flutter/material.dart';
 import 'package:rocky_rewards/main.dart';
 import 'package:rocky_rewards/utils/rocky_rewards.dart';
-import 'package:vrouter/vrouter.dart';
+import 'package:rocky_rewards/widgets/detailed_reward_view.dart';
+
+import 'edit_view.dart';
 
 class HorizontalRewardListTile extends StatelessWidget {
   final RockyReward reward;
@@ -24,8 +26,9 @@ class HorizontalRewardListTile extends StatelessWidget {
           children: [
             IconButton(
                 onPressed: () {
-                  context.vRouter.to(
-                      '/edit_view/${RockyRewardsManager.instance.rewardsList.indexOf(reward)}');
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => EditRewardView(reward: reward,)),
+                  );
                 },
                 icon: const Icon(Icons.edit)),
             IconButton(
@@ -39,8 +42,9 @@ class HorizontalRewardListTile extends StatelessWidget {
       );
 
   void onPressed(BuildContext context) {
-    context.vRouter.to('/detailed_view/'
-        '${RockyRewardsManager.instance.rewardsList.indexOf(reward)}');
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) => DetailedRewardView(reward: reward),
+    ));
   }
 
   String dateTimeToString(DateTime dateTime) =>
@@ -125,8 +129,9 @@ class VerticalListTile extends StatelessWidget {
       );
 
   void onPressed(BuildContext context) {
-    context.vRouter.to('/detailed_view/'
-        '${RockyRewardsManager.instance.rewardsList.indexOf(reward)}');
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) => DetailedRewardView(reward: reward),
+    ));
   }
 
   String dateTimeToString(DateTime dateTime) =>

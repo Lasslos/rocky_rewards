@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:rocky_rewards/main.dart';
 import 'package:toggle_switch/toggle_switch.dart';
-import 'package:vrouter/vrouter.dart';
 
 import '../utils/rocky_rewards.dart';
 
@@ -222,7 +221,7 @@ class EditRewardView extends StatelessWidget {
           reward.points = controller.points.value;
           reward.phone = controller.phoneController.text;
           RockyRewardsManager.instance.updateList();
-          context.vRouter.to('/');
+          Navigator.pop(context);
         },
         child: Container(
           padding: const EdgeInsets.all(10),
