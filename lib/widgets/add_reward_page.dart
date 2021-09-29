@@ -95,7 +95,8 @@ class AddReward extends StatelessWidget {
           child: TextField(
             controller: controller.groupNameController,
             decoration: const InputDecoration(
-                labelText: "Name of Organization, Team or Club"),
+                labelText: "Name of Organization, Team or Club"
+            ),
           ),
         ),
       );
@@ -151,7 +152,7 @@ class AddReward extends StatelessWidget {
                 Obx(
                   () => NumberPicker(
                     minValue: 0,
-                    value: controller.hoursOrNumberOfGames.value ?? 1,
+                    value: controller.hoursOrNumberOfGames.value,
                     maxValue: 127,
                     onChanged: (int value) {
                       controller.hoursOrNumberOfGames.value = value;
@@ -237,7 +238,7 @@ class AddReward extends StatelessWidget {
           }
           RockyRewardsManager.instance.addReward(
             RockyReward(
-              DateTime.now(),
+              controller.date.value,
               controller.rewardType.value,
               controller.groupNameController.text,
               controller.descriptionController.text,
@@ -266,7 +267,7 @@ class AddRewardController extends GetxController {
   TextEditingController groupNameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   Rx<AttendanceType> attendanceType = AttendanceType.values.first.obs;
-  Rx<int?> hoursOrNumberOfGames = Rx<int?>(null);
+  Rx<int> hoursOrNumberOfGames = Rx<int>(1);
   Rx<int> points = Rx<int>(1);
   SignatureController signatureController = SignatureController(
     exportBackgroundColor: Colors.white,

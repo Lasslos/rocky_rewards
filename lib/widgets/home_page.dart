@@ -33,10 +33,10 @@ class HomePage extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const CurrentPoints(),
-              const LastRewards(),
-              const AllRewards(),
+            children: const [
+              CurrentPoints(),
+              LastRewards(),
+              AllRewards(),
               ExportMonth(),
             ],
           ),
@@ -305,7 +305,7 @@ class AllRewards extends StatelessWidget {
 }
 
 class ExportMonth extends StatelessWidget {
-  ExportMonth({Key? key}) : super(key: key);
+  const ExportMonth({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => Card(

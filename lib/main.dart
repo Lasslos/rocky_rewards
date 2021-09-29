@@ -5,6 +5,7 @@ import 'package:rocky_rewards/utils/rocky_rewards.dart';
 import 'package:rocky_rewards/widgets/add_reward_page.dart';
 import 'package:rocky_rewards/widgets/all_items_list_view.dart';
 import 'package:rocky_rewards/widgets/detailed_reward_view.dart';
+import 'package:rocky_rewards/widgets/edit_view.dart';
 import 'package:rocky_rewards/widgets/home_page.dart';
 import 'package:rocky_rewards/widgets/loading_page.dart';
 import 'package:vrouter/vrouter.dart';
@@ -41,8 +42,8 @@ class MyApp extends StatelessWidget {
                 path: 'add_reward',
                 builder: (BuildContext context, VRouterData data) =>
                     LoadingBuilder(
-                  builder: (BuildContext context) => SynchronousFuture(
-                    AddReward(key: GlobalKey()),
+                      builder: (BuildContext context) => SynchronousFuture(
+                        AddReward(key: GlobalKey()),
                   ),
                 ),
               ),
@@ -50,6 +51,14 @@ class MyApp extends StatelessWidget {
               VWidget(
                   path: 'detailed_view/:id',
                   widget: const DetailedRewardView()),
+              VWidget.builder(
+                path: 'edit_view/:id',
+                builder: (BuildContext context, VRouterData state) {
+                  int id = int.tryParse(context.vRouter.pathParameters['id'] ?? '0') ?? 0;
+                  RockyReward reward = RockyRewardsManager.instance.rewardsList[id];
+                  return EditRewardView(reward: reward);
+                  },
+              ),
             ],
           ),
         ],

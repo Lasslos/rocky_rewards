@@ -194,7 +194,7 @@ void _fillRowInPage(PdfPage page, RockyReward reward, RowCoordinates row) {
   );
   //Hours or number of games
   graphics.drawString(
-    reward.hoursOrNumberOfGames?.toString() ?? '',
+    reward.hoursOrNumberOfGames.toString(),
     font,
     bounds: _hoursOrNumberOfGamesColumn.getRect(row),
     format: format,

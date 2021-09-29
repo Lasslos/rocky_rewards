@@ -5,13 +5,13 @@ import 'package:get/get.dart';
 import 'package:rocky_rewards/utils/image_coder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class RockyReward {
+class RockyReward extends Comparable<RockyReward> {
   DateTime date;
   RewardType rewardType;
   String groupName;
   String description;
   AttendanceType attendance;
-  int? hoursOrNumberOfGames;
+  int hoursOrNumberOfGames;
   int points;
   MyImage signature;
   String phone;
@@ -36,7 +36,7 @@ class RockyReward {
     var attendance =
         AttendanceType.values[_getFromJSON<int>(json, 'attendance', 0)];
     var hoursOrNumbersOfGames =
-        _getFromJSON<int?>(json, 'hoursOrNumbersOfGames', null);
+        _getFromJSON<int>(json, 'hoursOrNumbersOfGames', 0);
     var points = _getFromJSON<int>(json, 'points', 1);
     var signature =
         MyImage.fromString(_getFromJSON<String>(json, 'signature', ''));
@@ -60,14 +60,17 @@ class RockyReward {
     result['groupName'] = groupName;
     result['description'] = description;
     result['attendance'] = attendance.index;
-    if (hoursOrNumberOfGames != null) {
-      result['hoursOrNumberOfGames'] = hoursOrNumberOfGames!;
-    }
+    result['hoursOrNumberOfGames'] = hoursOrNumberOfGames;
     result['points'] = points;
     result['signature'] = signature.toString();
     result['phone'] = phone;
 
     return result;
+  }
+
+  @override
+  int compareTo(RockyReward other) {
+    return date.compareTo(other.date);
   }
 }
 
@@ -86,6 +89,11 @@ class RockyRewardsManager {
   RxList<RockyReward> get rewardsList => RxList.unmodifiable(_rewardsList);
   void addReward(RockyReward reward) {
     _rewardsList.add(reward);
+    _rewardsList.sort();
+    save();
+  }
+  void updateList() {
+    _rewardsList.sort();
     save();
   }
 

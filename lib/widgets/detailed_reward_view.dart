@@ -86,16 +86,15 @@ class DetailedRewardView extends StatelessWidget {
               ),
             ),
           ),
-          if (reward.hoursOrNumberOfGames != null)
-            Container(
-              margin: const EdgeInsets.all(5),
-              child: Center(
-                child: ListTile(
-                  title:
-                      Text('${reward.hoursOrNumberOfGames} Hour(s) or game(s)'),
-                ),
+          Container(
+            margin: const EdgeInsets.all(5),
+            child: Center(
+              child: ListTile(
+                title:
+                Text('${reward.hoursOrNumberOfGames} Hour(s) or game(s)'),
               ),
             ),
+          ),
           Container(
             margin:
                 const EdgeInsets.only(top: 5, left: 20, right: 20, bottom: 20),
@@ -123,6 +122,7 @@ class DetailedRewardView extends StatelessWidget {
                 decoration: const InputDecoration(
                   labelText: "Phone number of responsible person",
                 ),
+                enabled: false,
               ),
             ),
           ),

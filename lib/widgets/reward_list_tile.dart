@@ -19,11 +19,21 @@ class HorizontalRewardListTile extends StatelessWidget {
         subtitle: Text(
           '${reward.description} - ${dateTimeToString(reward.date)}',
         ),
-        trailing: IconButton(
-          onPressed: () {
-            onPressed(context);
-          },
-          icon: const Icon(Icons.arrow_forward),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+                onPressed: () {
+                  context.vRouter.to('/edit_view/${RockyRewardsManager.instance.rewardsList.indexOf(reward)}');
+                },
+                icon: const Icon(Icons.edit)),
+            IconButton(
+              onPressed: () {
+                onPressed(context);
+              },
+              icon: const Icon(Icons.arrow_forward),
+            ),
+          ],
         ),
       );
 
