@@ -91,7 +91,7 @@ class DetailedRewardView extends StatelessWidget {
             child: Center(
               child: ListTile(
                 title:
-                Text('${reward.hoursOrNumberOfGames} Hour(s) or game(s)'),
+                    Text('${reward.hoursOrNumberOfGames} Hour(s) or game(s)'),
               ),
             ),
           ),

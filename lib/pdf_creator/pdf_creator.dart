@@ -138,7 +138,6 @@ void _fillPage(DateTime month, String firstName, String lastName, String school,
     font,
     bounds: _communitySumField,
     format: format,
-
   );
 }
 

@@ -95,8 +95,7 @@ class AddReward extends StatelessWidget {
           child: TextField(
             controller: controller.groupNameController,
             decoration: const InputDecoration(
-                labelText: "Name of Organization, Team or Club"
-            ),
+                labelText: "Name of Organization, Team or Club"),
           ),
         ),
       );

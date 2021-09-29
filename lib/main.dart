@@ -42,8 +42,8 @@ class MyApp extends StatelessWidget {
                 path: 'add_reward',
                 builder: (BuildContext context, VRouterData data) =>
                     LoadingBuilder(
-                      builder: (BuildContext context) => SynchronousFuture(
-                        AddReward(key: GlobalKey()),
+                  builder: (BuildContext context) => SynchronousFuture(
+                    AddReward(key: GlobalKey()),
                   ),
                 ),
               ),
@@ -54,10 +54,13 @@ class MyApp extends StatelessWidget {
               VWidget.builder(
                 path: 'edit_view/:id',
                 builder: (BuildContext context, VRouterData state) {
-                  int id = int.tryParse(context.vRouter.pathParameters['id'] ?? '0') ?? 0;
-                  RockyReward reward = RockyRewardsManager.instance.rewardsList[id];
+                  int id = int.tryParse(
+                          context.vRouter.pathParameters['id'] ?? '0') ??
+                      0;
+                  RockyReward reward =
+                      RockyRewardsManager.instance.rewardsList[id];
                   return EditRewardView(reward: reward);
-                  },
+                },
               ),
             ],
           ),

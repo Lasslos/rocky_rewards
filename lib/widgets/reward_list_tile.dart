@@ -24,7 +24,8 @@ class HorizontalRewardListTile extends StatelessWidget {
           children: [
             IconButton(
                 onPressed: () {
-                  context.vRouter.to('/edit_view/${RockyRewardsManager.instance.rewardsList.indexOf(reward)}');
+                  context.vRouter.to(
+                      '/edit_view/${RockyRewardsManager.instance.rewardsList.indexOf(reward)}');
                 },
                 icon: const Icon(Icons.edit)),
             IconButton(

@@ -28,7 +28,9 @@ class RockyReward extends Comparable<RockyReward> {
       this.phone);
 
   static Future<RockyReward> fromJSON(Map<String, dynamic> json) async {
-    var date = _getFromJSON<DateTime>(json, 'date', DateTime.now());
+    var date = DateTime.tryParse(
+            _getFromJSON<String>(json, 'date', DateTime.now().toString())) ??
+        DateTime.now();
     var rewardType =
         RewardType.values[_getFromJSON<int>(json, 'rewardType', 0)];
     var groupName = _getFromJSON<String>(json, 'groupName', '');
@@ -82,7 +84,7 @@ class RockyRewardsManager {
   var initialized = false.obs;
 
   RockyRewardsManager._private() {
-    load();
+    _load();
   }
 
   final RxList<RockyReward> _rewardsList = <RockyReward>[].obs;
@@ -90,14 +92,15 @@ class RockyRewardsManager {
   void addReward(RockyReward reward) {
     _rewardsList.add(reward);
     _rewardsList.sort();
-    save();
-  }
-  void updateList() {
-    _rewardsList.sort();
-    save();
+    _save();
   }
 
-  Future<void> load() async {
+  void updateList() {
+    _rewardsList.sort();
+    _save();
+  }
+
+  Future<void> _load() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     List<String> rewardsList = preferences.getStringList('rewards') ?? [];
     for (var reward in rewardsList) {
@@ -107,7 +110,7 @@ class RockyRewardsManager {
     initialized.value = true;
   }
 
-  Future<void> save() async {
+  Future<void> _save() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     List<String> rewardsList = [];
     for (var reward in this.rewardsList) {
