@@ -37,8 +37,7 @@ class RockyReward extends Comparable<RockyReward> {
     var description = _getFromJSON(json, 'description', '');
     var attendance =
         AttendanceType.values[_getFromJSON<int>(json, 'attendance', 0)];
-    var hoursOrNumbersOfGames =
-        _getFromJSON<int>(json, 'hoursOrNumbersOfGames', 0);
+    var hoursOrNumbersOfGames = _getFromJSON<int>(json, 'hours', 0);
     var points = _getFromJSON<int>(json, 'points', 1);
     var signature =
         MyImage.fromString(_getFromJSON<String>(json, 'signature', ''));
@@ -62,7 +61,7 @@ class RockyReward extends Comparable<RockyReward> {
     result['groupName'] = groupName;
     result['description'] = description;
     result['attendance'] = attendance.index;
-    result['hoursOrNumberOfGames'] = hoursOrNumberOfGames;
+    result['hours'] = hoursOrNumberOfGames;
     result['points'] = points;
     result['signature'] = signature.toString();
     result['phone'] = phone;

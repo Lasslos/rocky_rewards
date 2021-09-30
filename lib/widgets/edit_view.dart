@@ -204,7 +204,6 @@ class EditRewardView extends StatelessWidget {
                   child: Center(
                     child: Text(
                       'Please fill out every field.',
-                      style: TextStyle(color: primary, fontSize: 16),
                     ),
                   ),
                 ),

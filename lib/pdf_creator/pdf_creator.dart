@@ -50,7 +50,8 @@ Future<ByteData> _getTemplateBytes() async {
   return await rootBundle.load('assets/template_pdf.pdf');
 }
 
-Future<List<int>> createPDFBytes(DateTime month) async {
+Future<List<int>> createPDFBytes(
+    DateTime month, String firstName, String lastName, String school) async {
   if (!RockyRewardsManager.instance.initialized.value) {
     await RockyRewardsManager.instance.initialized.stream.first;
   }
@@ -74,9 +75,9 @@ Future<List<int>> createPDFBytes(DateTime month) async {
     page.graphics.drawPdfTemplate(template, Offset.zero);
     _fillPage(
       month,
-      'Laslo',
-      'Hauschild',
-      'Selkirk Secondary School',
+      firstName,
+      lastName,
+      school,
       i != (numberOfPages - 1)
           ? list.sublist(_numberOfRows * i, _numberOfRows * (i + 1))
           : list.sublist(_numberOfRows * i),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rocky_rewards/pdf_creator/pdf_creator.dart';
 import 'package:rocky_rewards/widgets/add_reward_page.dart';
+import 'package:rocky_rewards/widgets/settings_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:rocky_rewards/utils/rocky_rewards.dart';
 import 'package:rocky_rewards/widgets/reward_list_tile.dart';
@@ -26,6 +28,20 @@ class HomePage extends StatelessWidget {
                 'assets/icon_red.png',
                 height: 41,
               ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SettingsPage(),
+                  ));
+            },
+            icon: const Icon(
+              Icons.settings,
+            ),
+          ),
+        ],
         title: const Text('Rocky Rewards - Overview'),
         centerTitle: true,
       ),
@@ -46,9 +62,11 @@ class HomePage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (context) => AddReward(),
-          ));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AddReward(),
+              ));
         },
         child: const Icon(Icons.add),
       ),
@@ -301,9 +319,11 @@ class AllRewards extends StatelessWidget {
           trailing: IconButton(
             icon: const Icon(Icons.arrow_forward),
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) => const AllRewardsListView(),
-              ));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AllRewardsListView(),
+                  ));
             },
           ),
         ),
@@ -323,6 +343,18 @@ class ExportMonth extends StatelessWidget {
           trailing: IconButton(
             icon: const Icon(Icons.arrow_forward),
             onPressed: () async {
+              var prefs = await SharedPreferences.getInstance();
+              if (!(prefs.containsKey('firstName') &&
+                  prefs.containsKey('lastName') &&
+                  prefs.containsKey('school'))) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SettingsPage(),
+                    ));
+                return;
+              }
+
               var month = await showMonthPicker(
                 context: context,
                 initialDate: DateTime.now(),
@@ -332,8 +364,11 @@ class ExportMonth extends StatelessWidget {
               if (month == null) {
                 return;
               }
+              var firstName = prefs.getString('firstName')!;
+              var lastName = prefs.getString('lastName')!;
+              var school = prefs.getString('school')!;
               writeAndOpenPDF(
-                await createPDFBytes(month),
+                await createPDFBytes(month, firstName, lastName, school),
                 '${date_utils.DateUtils.apiDayFormat(month).substring(0, 7)}_output.pdf'
                     .replaceAll(' ', '_')
                     .toLowerCase(),

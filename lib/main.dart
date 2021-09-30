@@ -16,17 +16,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-    themeMode: ThemeMode.system,
-    theme: ThemeData(
-      brightness: Brightness.light,
-      primaryColor: primary,
-      primarySwatch: Colors.red,
-    ),
-    darkTheme: ThemeData(
-      brightness: Brightness.dark,
-      primaryColor: primary,
-      primarySwatch: Colors.red,
-    ),
-    home: const HomePage(),
-  );
+        themeMode: ThemeMode.system,
+        theme: ThemeData(
+          brightness: Brightness.light,
+          primaryColor: primary,
+          primarySwatch: Colors.red,
+        ),
+        darkTheme: ThemeData(
+          brightness: Brightness.dark,
+          primaryColor: primary,
+          primarySwatch: Colors.red,
+        ),
+        home: const HomePage(),
+      );
 }

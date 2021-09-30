@@ -26,8 +26,12 @@ class HorizontalRewardListTile extends StatelessWidget {
           children: [
             IconButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => EditRewardView(reward: reward,)),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EditRewardView(
+                              reward: reward,
+                            )),
                   );
                 },
                 icon: const Icon(Icons.edit)),
@@ -42,9 +46,11 @@ class HorizontalRewardListTile extends StatelessWidget {
       );
 
   void onPressed(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(
-      builder: (context) => DetailedRewardView(reward: reward),
-    ));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DetailedRewardView(reward: reward),
+        ));
   }
 
   String dateTimeToString(DateTime dateTime) =>
@@ -129,9 +135,11 @@ class VerticalListTile extends StatelessWidget {
       );
 
   void onPressed(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(
-      builder: (context) => DetailedRewardView(reward: reward),
-    ));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DetailedRewardView(reward: reward),
+        ));
   }
 
   String dateTimeToString(DateTime dateTime) =>
