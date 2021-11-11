@@ -1,5 +1,6 @@
 import 'package:date_utils/date_utils.dart' as date_utils;
 import 'package:flutter/material.dart';
+import 'package:fluttercontactpicker/fluttercontactpicker.dart';
 import 'package:get/get.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:rocky_rewards/main.dart';
@@ -184,9 +185,26 @@ class AddReward extends StatelessWidget {
         padding: const EdgeInsets.only(left: 10, bottom: 10, right: 10),
         child: Center(
           child: TextField(
+            keyboardType: TextInputType.phone,
+            textInputAction: TextInputAction.none,
             controller: controller.phoneController,
-            decoration: const InputDecoration(
-                labelText: 'Phone number of responsible person'),
+            decoration: InputDecoration(
+              labelText: 'Phone number of responsible person',
+              suffixIcon: IconButton(
+                onPressed: () async {
+                  PhoneContact? contact;
+                  try {
+                    contact = await FlutterContactPicker.pickPhoneContact();
+                  } on Exception catch (e) {
+                    contact = null;
+                  }
+
+                  controller.phoneController.text =
+                      contact?.phoneNumber?.number ?? '';
+                },
+                icon: const Icon(Icons.person_search),
+              ),
+            ),
           ),
         ),
       );
