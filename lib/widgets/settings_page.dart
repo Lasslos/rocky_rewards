@@ -6,7 +6,7 @@ class SettingsPage extends StatelessWidget {
     _loadSettings();
   }
 
-  void _loadSettings() async {
+  Future<void> _loadSettings() async {
     var prefs = await SharedPreferences.getInstance();
     _firstNameController.text = prefs.getString('firstName') ?? '';
     _lastNameController.text = prefs.getString('lastName') ?? '';

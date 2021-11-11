@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:rocky_rewards/main.dart';
-import 'package:rocky_rewards/utils/image_coder.dart';
-import 'package:signature/signature.dart';
+import 'package:rocky_rewards/rocky_rewards/rocky_rewards.dart';
+import 'package:rocky_rewards/rocky_rewards/rocky_rewards_manager.dart'
+    as rocky_rewards_manager;
 import 'package:toggle_switch/toggle_switch.dart';
-
-import '../utils/rocky_rewards.dart';
 
 class AddReward extends StatelessWidget {
   AddReward({Key? key}) : super(key: key);
@@ -29,8 +28,6 @@ class AddReward extends StatelessWidget {
           _buildDescriptionTextField(context),
           _buildAttendanceTypeSelector(context),
           _buildPointsPicker(context),
-          _buildSignatureHeader(context),
-          _buildSignatureField(context),
           _buildPhoneNumberTextField(context),
           _buildSubmitButton(context),
         ],
@@ -50,7 +47,7 @@ class AddReward extends StatelessWidget {
               onPressed: () async {
                 controller.date.value = await showDatePicker(
                       context: context,
-                      initialDate: DateTime.now(),
+                      initialDate: controller.date.value,
                       firstDate:
                           DateTime.now().subtract(const Duration(days: 365)),
                       lastDate: DateTime.now(),
@@ -76,6 +73,7 @@ class AddReward extends StatelessWidget {
       padding: const EdgeInsets.all(15),
       child: Center(
         child: ToggleSwitch(
+          initialLabelIndex: controller.rewardType.value.index,
           minWidth: (MediaQuery.of(context).size.width - 50) / 3,
           animate: true,
           totalSwitches: RewardType.values.length,
@@ -94,7 +92,7 @@ class AddReward extends StatelessWidget {
           child: TextField(
             controller: controller.groupNameController,
             decoration: const InputDecoration(
-                labelText: "Name of Organization, Team or Club"),
+                labelText: 'Name of Organization, Team or Club'),
           ),
         ),
       );
@@ -104,7 +102,7 @@ class AddReward extends StatelessWidget {
         child: Center(
           child: TextField(
             controller: controller.descriptionController,
-            decoration: const InputDecoration(labelText: "Description"),
+            decoration: const InputDecoration(labelText: 'Description'),
           ),
         ),
       );
@@ -123,6 +121,7 @@ class AddReward extends StatelessWidget {
       padding: const EdgeInsets.all(5),
       child: Center(
         child: ToggleSwitch(
+          initialLabelIndex: controller.attendanceType.value.index,
           minWidth: (MediaQuery.of(context).size.width - 50) / 2,
           animate: true,
           totalSwitches: AttendanceType.values.length,
@@ -180,35 +179,13 @@ class AddReward extends StatelessWidget {
     );
   }
 
-  Widget _buildSignatureHeader(BuildContext context) {
-    var theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-      child: Text('Signature of responsible person',
-          style: theme.textTheme.subtitle1),
-    );
-  }
-
-  Widget _buildSignatureField(BuildContext context) => Container(
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-          color: Colors.grey,
-        ),
-        margin: const EdgeInsets.all(10),
-        padding: const EdgeInsets.all(10),
-        child: Signature(
-          controller: controller.signatureController,
-          height: 250,
-        ),
-      );
-
   Widget _buildPhoneNumberTextField(BuildContext context) => Container(
         padding: const EdgeInsets.only(left: 10, bottom: 10, right: 10),
         child: Center(
           child: TextField(
             controller: controller.phoneController,
             decoration: const InputDecoration(
-                labelText: "Phone number of responsible person"),
+                labelText: 'Phone number of responsible person'),
           ),
         ),
       );
@@ -217,8 +194,7 @@ class AddReward extends StatelessWidget {
         onPressed: () async {
           if (controller.groupNameController.text.isEmpty ||
               controller.descriptionController.text.isEmpty ||
-              controller.phoneController.text.isEmpty ||
-              controller.signatureController.isEmpty) {
+              controller.phoneController.text.isEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: SizedBox(
@@ -234,7 +210,7 @@ class AddReward extends StatelessWidget {
             );
             return;
           }
-          RockyRewardsManager.instance.addReward(
+          rocky_rewards_manager.rewardsList.add(
             RockyReward(
               controller.date.value,
               controller.rewardType.value,
@@ -243,7 +219,6 @@ class AddReward extends StatelessWidget {
               controller.attendanceType.value,
               controller.hoursOrNumberOfGames.value,
               controller.points.value,
-              MyImage((await controller.signatureController.toPngBytes())!),
               controller.phoneController.text,
             ),
           );
@@ -267,8 +242,5 @@ class AddRewardController extends GetxController {
   Rx<AttendanceType> attendanceType = AttendanceType.values.first.obs;
   Rx<int> hoursOrNumberOfGames = Rx<int>(1);
   Rx<int> points = Rx<int>(1);
-  SignatureController signatureController = SignatureController(
-    exportBackgroundColor: Colors.white,
-  );
   TextEditingController phoneController = TextEditingController();
 }

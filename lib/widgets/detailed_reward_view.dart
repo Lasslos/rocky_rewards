@@ -1,13 +1,12 @@
 import 'package:date_utils/date_utils.dart' as date_utils;
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/string_extensions.dart';
-import 'package:rocky_rewards/utils/rocky_rewards.dart';
+import 'package:rocky_rewards/rocky_rewards/rocky_rewards.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 class DetailedRewardView extends StatelessWidget {
+  const DetailedRewardView({required this.reward, Key? key}) : super(key: key);
   final RockyReward reward;
-
-  const DetailedRewardView({Key? key, required this.reward}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +19,7 @@ class DetailedRewardView extends StatelessWidget {
       ),
       body: ListView(
         children: [
+          ///Date of reward
           Container(
             margin: const EdgeInsets.all(15),
             child: Center(
@@ -29,11 +29,13 @@ class DetailedRewardView extends StatelessWidget {
               ),
             ),
           ),
+
+          ///Reward Type
           Container(
             margin: const EdgeInsets.all(15),
             child: Center(
               child: ToggleSwitch(
-                minWidth: (MediaQuery.of(context).size.width - 50),
+                minWidth: MediaQuery.of(context).size.width - 50,
                 totalSwitches: 1,
                 labels: [
                   reward.rewardType
@@ -44,35 +46,41 @@ class DetailedRewardView extends StatelessWidget {
               ),
             ),
           ),
+
+          ///Name of Organization, Team or Club
           Container(
             margin: const EdgeInsets.only(left: 20, bottom: 20, right: 20),
             child: Center(
               child: TextField(
                 controller: TextEditingController(text: reward.groupName),
                 decoration: const InputDecoration(
-                  labelText: "Name of Organization, Team or Club",
+                  labelText: 'Name of Organization, Team or Club',
                 ),
                 enabled: false,
               ),
             ),
           ),
+
+          ///Description
           Container(
             margin: const EdgeInsets.only(left: 20, bottom: 20, right: 20),
             child: Center(
               child: TextField(
                 controller: TextEditingController(text: reward.description),
                 decoration: const InputDecoration(
-                  labelText: "Description",
+                  labelText: 'Description',
                 ),
                 enabled: false,
               ),
             ),
           ),
+
+          ///Attendance
           Container(
             margin: const EdgeInsets.all(5),
             child: Center(
               child: ToggleSwitch(
-                minWidth: (MediaQuery.of(context).size.width - 50),
+                minWidth: MediaQuery.of(context).size.width - 50,
                 animate: true,
                 totalSwitches: 1,
                 labels: [
@@ -84,6 +92,8 @@ class DetailedRewardView extends StatelessWidget {
               ),
             ),
           ),
+
+          ///Hour(s) or games(s)
           Container(
             margin: const EdgeInsets.all(5),
             child: Center(
@@ -93,32 +103,23 @@ class DetailedRewardView extends StatelessWidget {
               ),
             ),
           ),
+
+          ///Points
           Container(
             margin:
                 const EdgeInsets.only(top: 5, left: 20, right: 20, bottom: 20),
             child: Text('${reward.points} Point(s)',
                 style: theme.textTheme.subtitle1),
           ),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-            child: Text('Signature of responsible person',
-                style: theme.textTheme.subtitle1),
-          ),
-          Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              color: Colors.white,
-            ),
-            margin: const EdgeInsets.all(10),
-            child: reward.signature.getWidget(),
-          ),
+
+          ///Phone number
           Container(
             margin: const EdgeInsets.only(left: 10, bottom: 10, right: 10),
             child: Center(
               child: TextField(
                 controller: TextEditingController(text: reward.phone),
                 decoration: const InputDecoration(
-                  labelText: "Phone number of responsible person",
+                  labelText: 'Phone number of responsible person',
                 ),
                 enabled: false,
               ),

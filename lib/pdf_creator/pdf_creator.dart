@@ -1,15 +1,17 @@
 import 'dart:io';
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:date_utils/date_utils.dart' as date_utils;
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rocky_rewards/pdf_creator/coordinates.dart';
-import 'package:rocky_rewards/utils/rocky_rewards.dart';
+import 'package:rocky_rewards/rocky_rewards/rocky_rewards.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:flutter/services.dart' show ByteData, rootBundle;
+import 'package:rocky_rewards/rocky_rewards/rocky_rewards_manager.dart'
+    as rocky_rewards_manager;
 
 const Rect _firstNameField = Rect.fromLTWH(310, 20, 98, 14);
 const Rect _lastNameField = Rect.fromLTWH(463, 20, 109, 14);
@@ -39,7 +41,6 @@ const int _numberOfAttendanceTypeColumns = 2;
 const ColumnCoordinates _hoursOrNumberOfGamesColumn =
     ColumnCoordinates(512, 36);
 const ColumnCoordinates _pointsColumn = ColumnCoordinates(549, 25);
-const ColumnCoordinates _signatureColumn = ColumnCoordinates(575, 90);
 const ColumnCoordinates _phoneColumn = ColumnCoordinates(669, 93);
 
 const Rect _volunteerSumField = Rect.fromLTWH(82, 485, 24, 18);
@@ -47,15 +48,15 @@ const Rect _schoolSumField = Rect.fromLTWH(107, 485, 25, 18);
 const Rect _communitySumField = Rect.fromLTWH(133, 485, 25, 18);
 
 Future<ByteData> _getTemplateBytes() async {
-  return await rootBundle.load('assets/template_pdf.pdf');
+  return rootBundle.load('assets/template_pdf.pdf');
 }
 
 Future<List<int>> createPDFBytes(
     DateTime month, String firstName, String lastName, String school) async {
-  if (!RockyRewardsManager.instance.initialized.value) {
-    await RockyRewardsManager.instance.initialized.stream.first;
+  if (!rocky_rewards_manager.initialized.value) {
+    await rocky_rewards_manager.initialized.stream.first;
   }
-  var list = RockyRewardsManager.instance.rewardsList
+  var list = rocky_rewards_manager.rewardsList
       .where((reward) =>
           reward.date.year == month.year && reward.date.month == month.month)
       .toList(growable: false);
@@ -115,8 +116,6 @@ void _fillPage(DateTime month, String firstName, String lastName, String school,
   for (var rewardType in RewardType.values) {
     points[rewardType] = 0;
   }
-  points[RewardType.school] = 1;
-  points[RewardType.volunteer] = 3;
   for (var reward in rewards) {
     var rewardType = reward.rewardType;
     points[rewardType] = points[rewardType]! + reward.points;
@@ -206,15 +205,6 @@ void _fillRowInPage(PdfPage page, RockyReward reward, RowCoordinates row) {
     bounds: _pointsColumn.getRect(row),
     format: format,
   );
-  //Signature
-  var signature = PdfBitmap(reward.signature.bytes);
-  graphics.drawImage(
-    signature,
-    _getEqualRatioRect(
-      _signatureColumn.getRect(row),
-      signature.height / signature.width,
-    ),
-  );
   //Phone
   graphics.drawString(
     reward.phone,
@@ -224,38 +214,31 @@ void _fillRowInPage(PdfPage page, RockyReward reward, RowCoordinates row) {
   );
 }
 
-/// Given a max rect, width and height ratio, it finds a rect
-/// aligned to the center of the given rect,
-/// that has the same width/height ratio.
-Rect _getEqualRatioRect(Rect constrain, double ratio) {
-  var rectRatio = constrain.height / constrain.width;
-  double left;
-  double top;
-  double width;
-  double height;
-  if (ratio < rectRatio) {
-    width = constrain.width;
-    height = width * ratio;
-    left = 0;
-    top = (constrain.height - height) / 2;
-  } else {
-    height = constrain.height;
-    width = pow(ratio, -1) * height;
-    left = (constrain.width - width) / 2;
-    top = 0;
-  }
-  return Rect.fromLTWH(
-    constrain.left + left,
-    constrain.top + top,
-    width,
-    height,
-  );
-}
-
-Future<void> writeAndOpenPDF(List<int> bytes, String fileName) async {
+Future<void> writeAndOpenPDF(
+    BuildContext context, List<int> bytes, String fileName) async {
   //Only works on android!
-  final path = (await getExternalStorageDirectory())!.path;
-  final file = File('$path/$fileName');
+  var path = (await getExternalStorageDirectory())!.path;
+  var file = File('$path/$fileName');
   await file.writeAsBytes(bytes, flush: true);
-  OpenFile.open(file.path);
+  var result = await OpenFile.open(file.path);
+
+  if (result.type == ResultType.done) {
+    return;
+  }
+
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text("That didn't work."),
+      content: Text(result.message),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('Ok'),
+        ),
+      ],
+    ),
+  );
 }

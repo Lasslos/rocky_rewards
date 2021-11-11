@@ -1,16 +1,16 @@
 import 'package:date_utils/date_utils.dart' as date_utils;
 import 'package:flutter/material.dart';
 import 'package:rocky_rewards/main.dart';
-import 'package:rocky_rewards/utils/rocky_rewards.dart';
+import 'package:rocky_rewards/rocky_rewards/rocky_rewards.dart';
 import 'package:rocky_rewards/widgets/detailed_reward_view.dart';
 
 import 'edit_view.dart';
 
 class HorizontalRewardListTile extends StatelessWidget {
-  final RockyReward reward;
-
-  const HorizontalRewardListTile({Key? key, required this.reward})
+  const HorizontalRewardListTile({required this.reward, Key? key})
       : super(key: key);
+
+  final RockyReward reward;
 
   @override
   Widget build(BuildContext context) => ListTile(
@@ -77,9 +77,9 @@ class HorizontalRewardListTile extends StatelessWidget {
 }
 
 class VerticalListTile extends StatelessWidget {
-  final RockyReward reward;
+  const VerticalListTile({required this.reward, Key? key}) : super(key: key);
 
-  const VerticalListTile({Key? key, required this.reward}) : super(key: key);
+  final RockyReward reward;
 
   @override
   Widget build(BuildContext context) => Container(

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rocky_rewards/pdf_creator/pdf_creator.dart';
+import 'package:rocky_rewards/rocky_rewards/rocky_rewards.dart';
 import 'package:rocky_rewards/widgets/add_reward_page.dart';
 import 'package:rocky_rewards/widgets/settings_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:rocky_rewards/utils/rocky_rewards.dart';
 import 'package:rocky_rewards/widgets/reward_list_tile.dart';
+import 'package:rocky_rewards/rocky_rewards/rocky_rewards_manager.dart'
+    as rocky_rewards_manager;
 import 'package:date_utils/date_utils.dart' as date_utils;
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 
@@ -99,15 +101,13 @@ class CurrentPoints extends StatelessWidget {
             style: Theme.of(context).textTheme.headline6,
           ),
           Obx(() {
-            var manager = RockyRewardsManager.instance;
             var allPoints = 0;
-            for (var reward in manager.rewardsList) {
+            for (var reward in rocky_rewards_manager.rewardsList) {
               allPoints += reward.points;
             }
-
             var theme = Theme.of(context);
 
-            return manager.initialized.value
+            return rocky_rewards_manager.initialized.value
                 ? Text(
                     '$allPoints',
                     style: theme.textTheme.headline6,
@@ -131,8 +131,7 @@ class CurrentPoints extends StatelessWidget {
       );
   Widget _buildSpecificPointsRow(BuildContext context, RewardType type) =>
       Obx(() {
-        var manager = RockyRewardsManager.instance;
-        var initialized = manager.initialized.value;
+        var initialized = rocky_rewards_manager.initialized.value;
 
         String displayName =
             type.toString().replaceFirst(type.runtimeType.toString() + '.', '');
@@ -140,7 +139,7 @@ class CurrentPoints extends StatelessWidget {
             displayName.replaceRange(0, 1, displayName[0].toUpperCase());
 
         int points = 0;
-        for (var element in manager.rewardsList) {
+        for (var element in rocky_rewards_manager.rewardsList) {
           if (element.rewardType == type) {
             points += element.points;
           }
@@ -208,10 +207,10 @@ class LastRewards extends StatelessWidget {
                 Expanded(
                   child: Center(
                     child: Obx(() {
-                      var manager = RockyRewardsManager.instance;
-                      var list = manager.rewardsList.reversed.toList();
+                      var list =
+                          rocky_rewards_manager.rewardsList.reversed.toList();
                       var theme = Theme.of(context);
-                      if (!manager.initialized.value) {
+                      if (!rocky_rewards_manager.initialized.value) {
                         return ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: 4,
@@ -283,8 +282,7 @@ class LastRewards extends StatelessWidget {
                         return const Text('Nothing here. Do something!');
                       }
 
-                      var itemCount =
-                          RockyRewardsManager.instance.rewardsList.length;
+                      var itemCount = rocky_rewards_manager.rewardsList.length;
                       if (itemCount > 4) {
                         itemCount = 4;
                       }
@@ -345,8 +343,11 @@ class ExportMonth extends StatelessWidget {
             onPressed: () async {
               var prefs = await SharedPreferences.getInstance();
               if (!(prefs.containsKey('firstName') &&
-                  prefs.containsKey('lastName') &&
-                  prefs.containsKey('school'))) {
+                      prefs.containsKey('lastName') &&
+                      prefs.containsKey('school')) ||
+                  prefs.getString('firstName')!.isEmpty ||
+                  prefs.getString('lastName')!.isEmpty ||
+                  prefs.getString('school')!.isEmpty) {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -368,8 +369,10 @@ class ExportMonth extends StatelessWidget {
               var lastName = prefs.getString('lastName')!;
               var school = prefs.getString('school')!;
               writeAndOpenPDF(
+                context,
                 await createPDFBytes(month, firstName, lastName, school),
-                '${date_utils.DateUtils.apiDayFormat(month).substring(0, 7)}_output.pdf'
+                '${date_utils.DateUtils.apiDayFormat(month).substring(0, 7)}'
+                        '_output.pdf'
                     .replaceAll(' ', '_')
                     .toLowerCase(),
               );

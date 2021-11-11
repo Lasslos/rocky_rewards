@@ -2,13 +2,13 @@ import 'package:date_utils/date_utils.dart' as date_utils;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:numberpicker/numberpicker.dart';
-import 'package:rocky_rewards/main.dart';
+import 'package:rocky_rewards/rocky_rewards/rocky_rewards.dart';
+import 'package:rocky_rewards/rocky_rewards/rocky_rewards_manager.dart'
+    as rocky_rewards_manager;
 import 'package:toggle_switch/toggle_switch.dart';
 
-import '../utils/rocky_rewards.dart';
-
 class EditRewardView extends StatelessWidget {
-  EditRewardView({Key? key, required this.reward}) : super(key: key) {
+  EditRewardView({required this.reward, Key? key}) : super(key: key) {
     controller = EditController(reward);
   }
 
@@ -94,7 +94,7 @@ class EditRewardView extends StatelessWidget {
           child: TextField(
             controller: controller.groupNameController,
             decoration: const InputDecoration(
-                labelText: "Name of Organization, Team or Club"),
+                labelText: 'Name of Organization, Team or Club'),
           ),
         ),
       );
@@ -104,7 +104,7 @@ class EditRewardView extends StatelessWidget {
         child: Center(
           child: TextField(
             controller: controller.descriptionController,
-            decoration: const InputDecoration(labelText: "Description"),
+            decoration: const InputDecoration(labelText: 'Description'),
           ),
         ),
       );
@@ -187,7 +187,7 @@ class EditRewardView extends StatelessWidget {
           child: TextField(
             controller: controller.phoneController,
             decoration: const InputDecoration(
-                labelText: "Phone number of responsible person"),
+                labelText: 'Phone number of responsible person'),
           ),
         ),
       );
@@ -211,15 +211,17 @@ class EditRewardView extends StatelessWidget {
             );
             return;
           }
-          reward.date = controller.date.value;
-          reward.rewardType = controller.rewardType.value;
-          reward.groupName = controller.groupNameController.text;
-          reward.description = controller.descriptionController.text;
-          reward.attendance = controller.attendanceType.value;
-          reward.hoursOrNumberOfGames = controller.hoursOrNumberOfGames.value;
-          reward.points = controller.points.value;
-          reward.phone = controller.phoneController.text;
-          RockyRewardsManager.instance.updateList();
+          var newReward = reward.copyWith(
+              controller.date.value,
+              controller.rewardType.value,
+              controller.groupNameController.text,
+              controller.descriptionController.text,
+              controller.attendanceType.value,
+              controller.hoursOrNumberOfGames.value,
+              controller.points.value,
+              controller.phoneController.text);
+          rocky_rewards_manager.rewardsList.remove(reward);
+          rocky_rewards_manager.rewardsList.add(newReward);
           Navigator.pop(context);
         },
         child: Container(

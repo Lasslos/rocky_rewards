@@ -2,14 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class LoadingBuilder extends StatelessWidget {
+  const LoadingBuilder(
+      {required this.builder,
+      Key? key,
+      this.minimumLoadingTime = const Duration(milliseconds: 500)})
+      : super(key: key);
+
   final Future<Widget> Function(BuildContext context) builder;
   final Duration minimumLoadingTime;
-
-  const LoadingBuilder(
-      {Key? key,
-      required this.builder,
-      this.minimumLoadingTime = const Duration(seconds: 1)})
-      : super(key: key);
 
   Future<Widget> _buildChild(BuildContext context) async {
     var futureWidget = builder(context);
