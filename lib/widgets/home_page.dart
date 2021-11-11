@@ -21,15 +21,15 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Theme.of(context).brightness == Brightness.light
-            ? Image.asset(
-                'assets/icon_white.png',
-                height: 41,
-              )
-            : Image.asset(
-                'assets/icon_red.png',
-                height: 41,
-              ),
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 8),
+          child: Image.asset(
+            Theme.of(context).brightness == Brightness.light
+                ? 'assets/icon_white.png'
+                : 'assets/icon_red.png',
+            height: 41,
+          ),
+        ),
         actions: [
           IconButton(
             onPressed: () {
@@ -44,7 +44,7 @@ class HomePage extends StatelessWidget {
             ),
           ),
         ],
-        title: const Text('Rocky Rewards - Overview'),
+        title: const Text('Rocky Rewards'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(

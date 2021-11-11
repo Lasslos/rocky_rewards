@@ -2,6 +2,8 @@ import 'package:date_utils/date_utils.dart' as date_utils;
 import 'package:flutter/material.dart';
 import 'package:rocky_rewards/main.dart';
 import 'package:rocky_rewards/rocky_rewards/rocky_rewards.dart';
+import 'package:rocky_rewards/rocky_rewards/rocky_rewards_manager.dart'
+    as rocky_rewards_manager;
 import 'package:rocky_rewards/widgets/detailed_reward_view.dart';
 
 import 'edit_view.dart';
@@ -21,36 +23,66 @@ class HorizontalRewardListTile extends StatelessWidget {
         subtitle: Text(
           '${reward.description} - ${dateTimeToString(reward.date)}',
         ),
+        onTap: () => viewMore(context),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => EditRewardView(
-                              reward: reward,
-                            )),
-                  );
-                },
+                onPressed: () => edit(context),
+                tooltip: 'Edit',
                 icon: const Icon(Icons.edit)),
             IconButton(
-              onPressed: () {
-                onPressed(context);
-              },
-              icon: const Icon(Icons.arrow_forward),
+              onPressed: () => delete(context),
+              tooltip: 'Delete',
+              icon: const Icon(Icons.delete, color: Colors.red),
             ),
           ],
         ),
       );
 
-  void onPressed(BuildContext context) {
+  void delete(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: const Text('Delete this reward?'),
+              content: const Text(
+                  'Do you really want to delete this reward? It will not be possible to restore it.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    rocky_rewards_manager.rewardsList.remove(reward);
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Ok', style: TextStyle(color: Colors.red)),
+                ),
+              ],
+            ));
+  }
+
+  void edit(BuildContext context) {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => DetailedRewardView(reward: reward),
-        ));
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditRewardView(
+          reward: reward,
+        ),
+      ),
+    );
+  }
+
+  void viewMore(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DetailedRewardView(reward: reward),
+      ),
+    );
   }
 
   String dateTimeToString(DateTime dateTime) =>
@@ -104,7 +136,7 @@ class VerticalListTile extends StatelessWidget {
             ),
             SizedBox(
               child: Text(
-                dateTimeToString(reward.date),
+                date_utils.DateUtils.formatFirstDay(reward.date),
                 style: const TextStyle(
                   fontSize: 14,
                 ),
@@ -127,21 +159,15 @@ class VerticalListTile extends StatelessWidget {
                 ],
               ),
               onPressed: () {
-                onPressed(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetailedRewardView(reward: reward),
+                  ),
+                );
               },
             ),
           ],
         ),
       );
-
-  void onPressed(BuildContext context) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => DetailedRewardView(reward: reward),
-        ));
-  }
-
-  String dateTimeToString(DateTime dateTime) =>
-      date_utils.DateUtils.formatFirstDay(dateTime);
 }

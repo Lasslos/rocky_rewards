@@ -40,7 +40,8 @@ class AddReward extends StatelessWidget {
         child: Center(
           child: ListTile(
             leading: const Icon(Icons.calendar_today),
-            title: Obx(() => Text(dateTimeToString(controller.date.value))),
+            title: Obx(() => Text(
+                date_utils.DateUtils.formatFirstDay(controller.date.value))),
             subtitle: const Text('Click to change'),
             trailing: IconButton(
               icon: const Icon(Icons.arrow_forward),
@@ -229,9 +230,6 @@ class AddReward extends StatelessWidget {
           child: const Text('Submit'),
         ),
       );
-
-  String dateTimeToString(DateTime dateTime) =>
-      date_utils.DateUtils.formatFirstDay(dateTime);
 }
 
 class AddRewardController extends GetxController {
