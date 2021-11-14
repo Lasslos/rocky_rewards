@@ -6,8 +6,10 @@ import 'package:rocky_rewards/rocky_rewards/rocky_rewards.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 RxBool initialized = false.obs;
+bool _isInitializing = false;
 RxList<RockyReward> get rewardsList {
-  if (!initialized.value) {
+  if (!initialized.value && !_isInitializing) {
+    _isInitializing = true;
     _load();
   }
   return _rewardsList;
@@ -20,12 +22,13 @@ Future<void> _load() async {
   for (var reward in rewardsList) {
     _rewardsList.add(RockyReward.fromJSON(jsonDecode(reward)));
   }
+  _rewardsList.listen(_maybeUpdateList);
+  await Future.delayed(const Duration(seconds: 3));
   initialized.value = true;
-  _rewardsList.listen(_mabyeUpdateList);
 }
 
 List<RockyReward> _last = [];
-void _mabyeUpdateList(List<RockyReward> list) {
+void _maybeUpdateList(List<RockyReward> list) {
   if (!listEquals(_last, list)) {
     _last = list;
     _last.sort();

@@ -1,24 +1,68 @@
 import 'package:date_utils/date_utils.dart' as date_utils;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttercontactpicker/fluttercontactpicker.dart';
 import 'package:get/get.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:rocky_rewards/main.dart';
 import 'package:rocky_rewards/rocky_rewards/rocky_rewards.dart';
-import 'package:rocky_rewards/rocky_rewards/rocky_rewards_manager.dart'
-    as rocky_rewards_manager;
 import 'package:toggle_switch/toggle_switch.dart';
 
-class AddReward extends StatelessWidget {
-  AddReward({Key? key}) : super(key: key);
+Future<RockyReward?> createRockyReward(BuildContext context) =>
+    showDialog<RockyReward?>(
+        context: context, builder: (context) => _RewardCreator());
 
-  final AddRewardController controller = AddRewardController();
+Future<RockyReward> editRockyReward(
+        BuildContext context, RockyReward reward) async =>
+    await showDialog<RockyReward?>(
+        context: context,
+        builder: (context) => _RewardCreator(
+              date: reward.date,
+              rewardType: reward.rewardType,
+              groupName: reward.groupName,
+              description: reward.description,
+              attendanceType: reward.attendance,
+              hoursOrNumberOfGames: reward.hoursOrNumberOfGames,
+              points: reward.points,
+              phoneNumber: reward.phone,
+            )) ??
+    reward;
+
+class _RewardCreator extends StatelessWidget {
+  _RewardCreator({
+    Key? key,
+    DateTime? date,
+    RewardType rewardType = RewardType.volunteer,
+    String groupName = '',
+    String description = '',
+    AttendanceType attendanceType = AttendanceType.participant,
+    int hoursOrNumberOfGames = 1,
+    int points = 1,
+    String phoneNumber = '',
+  })  : date = (date ?? DateTime.now()).obs,
+        rewardType = rewardType.obs,
+        groupNameController = TextEditingController(text: groupName),
+        descriptionController = TextEditingController(text: description),
+        attendanceType = attendanceType.obs,
+        hoursOrNumberOfGames = hoursOrNumberOfGames.obs,
+        points = points.obs,
+        phoneController = TextEditingController(text: phoneNumber),
+        super(key: key);
+
+  final Rx<DateTime> date;
+  final Rx<RewardType> rewardType;
+  final TextEditingController groupNameController;
+  final TextEditingController descriptionController;
+  final Rx<AttendanceType> attendanceType;
+  final Rx<int> hoursOrNumberOfGames;
+  final Rx<int> points;
+  final TextEditingController phoneController;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Rocky Rewards - Add'),
+        title: const Text('Rocky Rewards'),
         centerTitle: true,
       ),
       body: ListView(
@@ -36,20 +80,20 @@ class AddReward extends StatelessWidget {
     );
   }
 
-  Widget _buildDateSelector(BuildContext context) => Container(
+  Widget _buildDateSelector(BuildContext context) => Padding(
         padding: const EdgeInsets.all(15),
         child: Center(
           child: ListTile(
             leading: const Icon(Icons.calendar_today),
-            title: Obx(() => Text(
-                date_utils.DateUtils.formatFirstDay(controller.date.value))),
+            title: Obx(
+                () => Text(date_utils.DateUtils.formatFirstDay(date.value))),
             subtitle: const Text('Click to change'),
             trailing: IconButton(
               icon: const Icon(Icons.arrow_forward),
               onPressed: () async {
-                controller.date.value = await showDatePicker(
+                date.value = await showDatePicker(
                       context: context,
-                      initialDate: controller.date.value,
+                      initialDate: date.value,
                       firstDate:
                           DateTime.now().subtract(const Duration(days: 365)),
                       lastDate: DateTime.now(),
@@ -75,35 +119,35 @@ class AddReward extends StatelessWidget {
       padding: const EdgeInsets.all(15),
       child: Center(
         child: ToggleSwitch(
-          initialLabelIndex: controller.rewardType.value.index,
+          initialLabelIndex: rewardType.value.index,
           minWidth: (MediaQuery.of(context).size.width - 50) / 3,
           animate: true,
           totalSwitches: RewardType.values.length,
           labels: rewardTypeNameList,
           onToggle: (index) {
-            controller.rewardType.value = RewardType.values[index];
+            rewardType.value = RewardType.values[index];
           },
         ),
       ),
     );
   }
 
-  Widget _buildGroupNameTextField(BuildContext context) => Container(
+  Widget _buildGroupNameTextField(BuildContext context) => Padding(
         padding: const EdgeInsets.only(left: 20, bottom: 20, right: 20),
         child: Center(
           child: TextField(
-            controller: controller.groupNameController,
+            controller: groupNameController,
             decoration: const InputDecoration(
                 labelText: 'Name of Organization, Team or Club'),
           ),
         ),
       );
 
-  Widget _buildDescriptionTextField(BuildContext context) => Container(
+  Widget _buildDescriptionTextField(BuildContext context) => Padding(
         padding: const EdgeInsets.only(left: 20, bottom: 20, right: 20),
         child: Center(
           child: TextField(
-            controller: controller.descriptionController,
+            controller: descriptionController,
             decoration: const InputDecoration(labelText: 'Description'),
           ),
         ),
@@ -123,13 +167,13 @@ class AddReward extends StatelessWidget {
       padding: const EdgeInsets.all(5),
       child: Center(
         child: ToggleSwitch(
-          initialLabelIndex: controller.attendanceType.value.index,
+          initialLabelIndex: attendanceType.value.index,
           minWidth: (MediaQuery.of(context).size.width - 50) / 2,
           animate: true,
           totalSwitches: AttendanceType.values.length,
           labels: attendanceTypeNameList,
           onToggle: (index) {
-            controller.attendanceType.value = AttendanceType.values[index];
+            attendanceType.value = AttendanceType.values[index];
           },
         ),
       ),
@@ -151,10 +195,10 @@ class AddReward extends StatelessWidget {
                 Obx(
                   () => NumberPicker(
                     minValue: 0,
-                    value: controller.hoursOrNumberOfGames.value,
+                    value: hoursOrNumberOfGames.value,
                     maxValue: 127,
                     onChanged: (int value) {
-                      controller.hoursOrNumberOfGames.value = value;
+                      hoursOrNumberOfGames.value = value;
                     },
                   ),
                 ),
@@ -166,10 +210,10 @@ class AddReward extends StatelessWidget {
                 Obx(
                   () => NumberPicker(
                     minValue: 0,
-                    value: controller.points.value,
+                    value: points.value,
                     maxValue: 127,
                     onChanged: (int value) {
-                      controller.points.value = value;
+                      points.value = value;
                     },
                   ),
                 ),
@@ -181,13 +225,13 @@ class AddReward extends StatelessWidget {
     );
   }
 
-  Widget _buildPhoneNumberTextField(BuildContext context) => Container(
+  Widget _buildPhoneNumberTextField(BuildContext context) => Padding(
         padding: const EdgeInsets.only(left: 10, bottom: 10, right: 10),
         child: Center(
           child: TextField(
             keyboardType: TextInputType.phone,
             textInputAction: TextInputAction.none,
-            controller: controller.phoneController,
+            controller: phoneController,
             decoration: InputDecoration(
               labelText: 'Phone number of responsible person',
               suffixIcon: IconButton(
@@ -195,12 +239,11 @@ class AddReward extends StatelessWidget {
                   PhoneContact? contact;
                   try {
                     contact = await FlutterContactPicker.pickPhoneContact();
-                  } on Exception catch (e) {
+                  } on Exception {
                     contact = null;
                   }
 
-                  controller.phoneController.text =
-                      contact?.phoneNumber?.number ?? '';
+                  phoneController.text = contact?.phoneNumber?.number ?? '';
                 },
                 icon: const Icon(Icons.person_search),
               ),
@@ -209,54 +252,47 @@ class AddReward extends StatelessWidget {
         ),
       );
 
-  Widget _buildSubmitButton(BuildContext context) => TextButton(
-        onPressed: () async {
-          if (controller.groupNameController.text.isEmpty ||
-              controller.descriptionController.text.isEmpty ||
-              controller.phoneController.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: SizedBox(
-                  height: 25,
-                  child: Center(
+  Widget _buildSubmitButton(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(primary: primary),
+          onPressed: () async {
+            if (groupNameController.text.isEmpty ||
+                descriptionController.text.isEmpty ||
+                phoneController.text.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  backgroundColor: primary,
+                  elevation: 10,
+                  behavior: SnackBarBehavior.floating,
+                  width: MediaQuery.of(context).size.width - 50,
+                  content: const Center(
+                    heightFactor: 1,
                     child: Text(
                       'Please fill out every field.',
-                      style: TextStyle(color: primary, fontSize: 16),
                     ),
                   ),
                 ),
+              );
+              return;
+            }
+            Navigator.pop(
+              context,
+              RockyReward(
+                date.value,
+                rewardType.value,
+                groupNameController.text,
+                descriptionController.text,
+                attendanceType.value,
+                hoursOrNumberOfGames.value,
+                points.value,
+                phoneController.text,
               ),
             );
-            return;
-          }
-          rocky_rewards_manager.rewardsList.add(
-            RockyReward(
-              controller.date.value,
-              controller.rewardType.value,
-              controller.groupNameController.text,
-              controller.descriptionController.text,
-              controller.attendanceType.value,
-              controller.hoursOrNumberOfGames.value,
-              controller.points.value,
-              controller.phoneController.text,
-            ),
-          );
-          Navigator.pop(context);
-        },
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          child: const Text('Submit'),
+          },
+          child: const Center(
+            child: Text('Submit'),
+          ),
         ),
       );
-}
-
-class AddRewardController extends GetxController {
-  Rx<DateTime> date = DateTime.now().obs;
-  Rx<RewardType> rewardType = RewardType.values.first.obs;
-  TextEditingController groupNameController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
-  Rx<AttendanceType> attendanceType = AttendanceType.values.first.obs;
-  Rx<int> hoursOrNumberOfGames = Rx<int>(1);
-  Rx<int> points = Rx<int>(1);
-  TextEditingController phoneController = TextEditingController();
 }

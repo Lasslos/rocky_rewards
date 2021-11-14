@@ -5,8 +5,7 @@ import 'package:rocky_rewards/rocky_rewards/rocky_rewards.dart';
 import 'package:rocky_rewards/rocky_rewards/rocky_rewards_manager.dart'
     as rocky_rewards_manager;
 import 'package:rocky_rewards/widgets/detailed_reward_view.dart';
-
-import 'edit_view.dart';
+import 'package:rocky_rewards/widgets/reward_creator.dart';
 
 class HorizontalRewardListTile extends StatelessWidget {
   const HorizontalRewardListTile({required this.reward, Key? key})
@@ -21,9 +20,10 @@ class HorizontalRewardListTile extends StatelessWidget {
           reward.groupName,
         ),
         subtitle: Text(
-          '${reward.description} - ${dateTimeToString(reward.date)}',
+          '${reward.description} - '
+          '${date_utils.DateUtils.formatFirstDay(reward.date)}',
         ),
-        onTap: () => viewMore(context),
+        onTap: () => _viewMore(context),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -32,7 +32,7 @@ class HorizontalRewardListTile extends StatelessWidget {
                 tooltip: 'Edit',
                 icon: const Icon(Icons.edit)),
             IconButton(
-              onPressed: () => delete(context),
+              onPressed: () => _delete(context),
               tooltip: 'Delete',
               icon: const Icon(Icons.delete, color: Colors.red),
             ),
@@ -40,13 +40,13 @@ class HorizontalRewardListTile extends StatelessWidget {
         ),
       );
 
-  void delete(BuildContext context) {
+  void _delete(BuildContext context) {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
               title: const Text('Delete this reward?'),
-              content: const Text(
-                  'Do you really want to delete this reward? It will not be possible to restore it.'),
+              content: const Text('Do you really want to delete this reward? '
+                  'It will not be possible to restore it.'),
               actions: [
                 TextButton(
                   onPressed: () {
@@ -65,18 +65,14 @@ class HorizontalRewardListTile extends StatelessWidget {
             ));
   }
 
-  void edit(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => EditRewardView(
-          reward: reward,
-        ),
-      ),
-    );
+  Future<void> edit(BuildContext context) async {
+    var editedReward = await editRockyReward(context, reward);
+    rocky_rewards_manager.rewardsList.remove(reward);
+    rocky_rewards_manager.rewardsList.add(editedReward);
+    rocky_rewards_manager.rewardsList.sort();
   }
 
-  void viewMore(BuildContext context) {
+  void _viewMore(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -84,9 +80,6 @@ class HorizontalRewardListTile extends StatelessWidget {
       ),
     );
   }
-
-  String dateTimeToString(DateTime dateTime) =>
-      date_utils.DateUtils.formatFirstDay(dateTime);
 
   Icon _buildTypeSpecifiedIcon() {
     late IconData iconData;
