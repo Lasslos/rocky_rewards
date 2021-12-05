@@ -8,10 +8,9 @@ import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rocky_rewards/pdf_creator/coordinates.dart';
 import 'package:rocky_rewards/rocky_rewards/rocky_rewards.dart';
+import 'package:rocky_rewards/rocky_rewards/rocky_rewards_list.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:flutter/services.dart' show ByteData, rootBundle;
-import 'package:rocky_rewards/rocky_rewards/rocky_rewards_manager.dart'
-    as rocky_rewards_manager;
 
 const Rect _firstNameField = Rect.fromLTWH(310, 20, 98, 14);
 const Rect _lastNameField = Rect.fromLTWH(463, 20, 109, 14);
@@ -53,10 +52,10 @@ Future<ByteData> _getTemplateBytes() async {
 
 Future<List<int>> createPDFBytes(
     DateTime month, String firstName, String lastName, String school) async {
-  if (!rocky_rewards_manager.initialized.value) {
-    await rocky_rewards_manager.initialized.stream.first;
+  if (!rewardsList.initialized.value) {
+    await rewardsList.initialized.stream.first;
   }
-  var list = rocky_rewards_manager.rewardsList
+  var list = rewardsList.copy
       .where((reward) =>
           reward.date.year == month.year && reward.date.month == month.month)
       .toList(growable: false);

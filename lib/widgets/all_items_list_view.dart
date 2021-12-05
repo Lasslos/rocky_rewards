@@ -1,9 +1,8 @@
 import 'package:date_utils/date_utils.dart' as date_utils;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rocky_rewards/rocky_rewards/rocky_rewards_list.dart';
 import 'package:rocky_rewards/widgets/reward_list_tile.dart';
-import 'package:rocky_rewards/rocky_rewards/rocky_rewards_manager.dart'
-    as rocky_rewards_manager;
 
 class AllRewardsListView extends StatelessWidget {
   const AllRewardsListView({Key? key}) : super(key: key);
@@ -18,7 +17,7 @@ class AllRewardsListView extends StatelessWidget {
           () {
             List<Widget> items = [];
             DateTime? lastMonth;
-            for (var reward in rocky_rewards_manager.rewardsList.reversed) {
+            for (var reward in rewardsList.rx.value.copy.reversed) {
               var month = DateTime(reward.date.year, reward.date.month);
               if (month != lastMonth) {
                 lastMonth = month;

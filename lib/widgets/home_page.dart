@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rocky_rewards/pdf_creator/pdf_creator.dart';
 import 'package:rocky_rewards/rocky_rewards/rocky_rewards.dart';
+import 'package:rocky_rewards/rocky_rewards/rocky_rewards_list.dart';
 import 'package:rocky_rewards/widgets/reward_creator.dart';
 import 'package:rocky_rewards/widgets/settings_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:rocky_rewards/widgets/reward_list_tile.dart';
-import 'package:rocky_rewards/rocky_rewards/rocky_rewards_manager.dart'
-    as rocky_rewards_manager;
 import 'package:date_utils/date_utils.dart' as date_utils;
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 
@@ -19,170 +18,164 @@ class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 8),
-          child: Image.asset(
-            Theme.of(context).brightness == Brightness.light
-                ? 'assets/icon_white.png'
-                : 'assets/icon_red.png',
-            height: 41,
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SettingsPage(),
-                  ));
-            },
-            icon: const Icon(
-              Icons.settings,
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: Image.asset(
+              Theme.of(context).brightness == Brightness.light
+                  ? 'assets/icon_white.png'
+                  : 'assets/icon_red.png',
+              height: 41,
             ),
           ),
-        ],
-        title: const Text('Rocky Rewards'),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(15),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              CurrentPoints(),
-              LastRewards(),
-              AllRewards(),
-              ExportMonth(),
-            ],
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SettingsPage(),
+                    ));
+              },
+              icon: const Icon(
+                Icons.settings,
+              ),
+            ),
+          ],
+          title: const Text('Rocky Rewards'),
+          centerTitle: true,
+        ),
+        body: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                CurrentPoints(),
+                LastRewards(),
+                AllRewards(),
+                ExportMonth(),
+              ],
+            ),
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          var reward = await createRockyReward(context);
-          if (reward != null) {
-            rocky_rewards_manager.rewardsList.add(reward);
-          }
-        },
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            var reward = await createRockyReward(context);
+            if (reward != null) {
+              rewardsList.add(reward);
+            }
+          },
+          child: const Icon(Icons.add),
+        ),
+      );
 }
 
 class CurrentPoints extends StatelessWidget {
   const CurrentPoints({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => Obx(() {
-        var initialized = rocky_rewards_manager.initialized.value;
-        var theme = Theme.of(context);
+  Widget build(BuildContext context) {
+    var theme = Theme.of(context);
 
-        return SizedBox(
-          height: 92,
-          child: Card(
-            child: initialized
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildSpecificPointsColumn(context, RewardType.volunteer),
-                      _buildSpecificPointsColumn(context, RewardType.school),
-                      _buildSpecificPointsColumn(context, RewardType.community),
-                      _buildAllPointsColumn(context),
-                    ],
-                  )
-                : Shimmer.fromColors(
-                    period: const Duration(milliseconds: 1400),
-                    highlightColor: theme.scaffoldBackgroundColor,
-                    baseColor: theme.hintColor,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 25),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Container(
-                            height: 20,
-                            decoration: BoxDecoration(
-                              color: theme.hintColor,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(20)),
-                            ),
+    return SizedBox(
+      height: 92,
+      child: Card(
+        child: Obx(() {
+          var initialized = rewardsList.initialized.value;
+          return initialized
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildSpecificPointsColumn(context, RewardType.volunteer),
+                    _buildSpecificPointsColumn(context, RewardType.school),
+                    _buildSpecificPointsColumn(context, RewardType.community),
+                    _buildAllPointsColumn(context),
+                  ],
+                )
+              : Shimmer.fromColors(
+                  period: const Duration(milliseconds: 1400),
+                  highlightColor: theme.scaffoldBackgroundColor,
+                  baseColor: theme.hintColor,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 25),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                          height: 20,
+                          decoration: BoxDecoration(
+                            color: theme.hintColor,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(20)),
                           ),
-                          Container(
-                            height: 20,
-                            decoration: BoxDecoration(
-                              color: theme.hintColor,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(20)),
-                            ),
+                        ),
+                        Container(
+                          height: 20,
+                          decoration: BoxDecoration(
+                            color: theme.hintColor,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(20)),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
+                );
+        }),
+      ),
+    );
+  }
+
+  Widget _buildAllPointsColumn(BuildContext context) => Padding(
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Padding(
+            padding: EdgeInsets.all(5),
+            child: Text('Σ', style: TextStyle(color: primary, fontSize: 24)),
           ),
-        );
-      });
-
-  Widget _buildAllPointsColumn(BuildContext context) => Obx(() {
-        var icon =
-            const Text('Σ', style: TextStyle(color: primary, fontSize: 24));
-
-        int points = rocky_rewards_manager.rewardsList.fold(
-            0, (previousValue, element) => previousValue + element.points);
-
-        return Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(5),
-                child: icon,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(5),
-                child: Text(points.toString()),
-              ),
-            ],
+          Padding(
+            padding: const EdgeInsets.all(5),
+            child: Obx(() {
+              int points = rewardsList.rx.value.fold(0,
+                  (previousValue, element) => previousValue + element.points);
+              return Text(points.toString());
+            }),
           ),
-        );
-      });
+        ],
+      ));
+
   Widget _buildSpecificPointsColumn(BuildContext context, RewardType type) =>
-      Obx(() {
-        var icon = _buildTypeSpecifiedIcon(type);
-
-        int points = rocky_rewards_manager.rewardsList.fold(
-          0,
-          (previousValue, element) => element.rewardType == type
-              ? previousValue + element.points
-              : previousValue,
-        );
-
-        return Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(5),
-                child: icon,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(5),
-                child: Text(points.toString()),
-              ),
-            ],
-          ),
-        );
-      });
+      Padding(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(5),
+              child: _buildTypeSpecifiedIcon(type),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(5),
+              child: Obx(() {
+                return Text(rewardsList.rx.value
+                    .fold<int>(
+                      0,
+                      (previousValue, element) => element.rewardType == type
+                          ? previousValue + element.points
+                          : previousValue,
+                    )
+                    .toString());
+              }),
+            ),
+          ],
+        ),
+      );
 
   Icon _buildTypeSpecifiedIcon(RewardType rewardType) {
     late IconData iconData;
@@ -210,13 +203,12 @@ class LastRewards extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         constraints: const BoxConstraints(
-          minHeight: 176,
-          maxHeight: 189,
+          maxHeight: 188,
         ),
         child: Card(
           child: Container(
             padding:
-                const EdgeInsets.only(top: 15, left: 15, bottom: 5, right: 5),
+                const EdgeInsets.only(top: 15, left: 15, bottom: 10, right: 15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
@@ -239,10 +231,9 @@ class LastRewards extends StatelessWidget {
                 Expanded(
                   child: Center(
                     child: Obx(() {
-                      var list =
-                          rocky_rewards_manager.rewardsList.reversed.toList();
+                      var list = rewardsList.rx.value.copy.reversed.toList();
                       var theme = Theme.of(context);
-                      if (!rocky_rewards_manager.initialized.value) {
+                      if (!rewardsList.initialized.value) {
                         return Shimmer.fromColors(
                           period: const Duration(milliseconds: 1400),
                           highlightColor: theme.scaffoldBackgroundColor,
@@ -315,19 +306,18 @@ class LastRewards extends StatelessWidget {
                         return const Text('Nothing here. Do something!');
                       }
 
-                      var itemCount = rocky_rewards_manager.rewardsList.length;
+                      var itemCount = rewardsList.rx.value.length;
                       if (itemCount > 4) {
                         itemCount = 4;
                       }
                       return ListView.builder(
-                        itemCount: itemCount,
-                        shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return VerticalListTile(
-                            reward: list[index],
-                          );
-                        },
+                        itemCount: 4,
+                        itemBuilder: (context, index) =>
+                            SizedBox(
+                              width: 117,
+                              child: VerticalListTile(reward: list[index]),
+                            ),
                       );
                     }),
                   ),

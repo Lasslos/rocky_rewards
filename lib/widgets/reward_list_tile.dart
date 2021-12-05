@@ -2,8 +2,7 @@ import 'package:date_utils/date_utils.dart' as date_utils;
 import 'package:flutter/material.dart';
 import 'package:rocky_rewards/main.dart';
 import 'package:rocky_rewards/rocky_rewards/rocky_rewards.dart';
-import 'package:rocky_rewards/rocky_rewards/rocky_rewards_manager.dart'
-    as rocky_rewards_manager;
+import 'package:rocky_rewards/rocky_rewards/rocky_rewards_list.dart';
 import 'package:rocky_rewards/widgets/detailed_reward_view.dart';
 import 'package:rocky_rewards/widgets/reward_creator.dart';
 
@@ -56,7 +55,7 @@ class HorizontalRewardListTile extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: () {
-                    rocky_rewards_manager.rewardsList.remove(reward);
+                    rewardsList.remove(reward);
                     Navigator.pop(context);
                   },
                   child: const Text('Ok', style: TextStyle(color: Colors.red)),
@@ -67,9 +66,8 @@ class HorizontalRewardListTile extends StatelessWidget {
 
   Future<void> edit(BuildContext context) async {
     var editedReward = await editRockyReward(context, reward);
-    rocky_rewards_manager.rewardsList.remove(reward);
-    rocky_rewards_manager.rewardsList.add(editedReward);
-    rocky_rewards_manager.rewardsList.sort();
+    rewardsList.remove(reward);
+    rewardsList.add(editedReward);
   }
 
   void _viewMore(BuildContext context) {
@@ -113,8 +111,12 @@ class VerticalListTile extends StatelessWidget {
           children: [
             Container(
               margin: const EdgeInsets.only(bottom: 5, top: 5),
-              child:
-                  Text(reward.groupName, style: const TextStyle(fontSize: 20)),
+              child: Text(
+                reward.groupName,
+                style: const TextStyle(fontSize: 20),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
             Container(
               margin: const EdgeInsets.only(bottom: 2.5, top: 2.5),
@@ -133,6 +135,8 @@ class VerticalListTile extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 14,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.clip,
               ),
             ),
             TextButton(
