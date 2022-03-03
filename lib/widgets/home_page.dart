@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rocky_rewards/backup/export_backup.dart';
 import 'package:rocky_rewards/pdf_creator/pdf_creator.dart';
 import 'package:rocky_rewards/rocky_rewards/rocky_rewards.dart';
 import 'package:rocky_rewards/rocky_rewards/rocky_rewards_list.dart';
@@ -57,6 +58,7 @@ class HomePage extends StatelessWidget {
                 LastRewards(),
                 AllRewards(),
                 ExportMonth(),
+                BackupData(),
               ],
             ),
           ),
@@ -78,104 +80,61 @@ class CurrentPoints extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var theme = Theme.of(context);
 
-    return SizedBox(
-      height: 92,
-      child: Card(
-        child: Obx(() {
-          var initialized = rewardsList.initialized.value;
-          return initialized
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildSpecificPointsColumn(context, RewardType.volunteer),
-                    _buildSpecificPointsColumn(context, RewardType.school),
-                    _buildSpecificPointsColumn(context, RewardType.community),
-                    _buildAllPointsColumn(context),
-                  ],
-                )
-              : Shimmer.fromColors(
-                  period: const Duration(milliseconds: 1400),
-                  highlightColor: theme.scaffoldBackgroundColor,
-                  baseColor: theme.hintColor,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 25),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Container(
-                          height: 20,
-                          decoration: BoxDecoration(
-                            color: theme.hintColor,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                        Container(
-                          height: 20,
-                          decoration: BoxDecoration(
-                            color: theme.hintColor,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(20)),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-        }),
-      ),
-    );
-  }
-
-  Widget _buildAllPointsColumn(BuildContext context) => Padding(
-      padding: const EdgeInsets.all(10),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Padding(
-            padding: EdgeInsets.all(5),
-            child: Text('Σ', style: TextStyle(color: primary, fontSize: 24)),
+    var iconTableRowWidgets = <Widget>[];
+    var valueTableRowWidgets = <Widget>[];
+    for (var element in RewardType.values) {
+      iconTableRowWidgets.add(
+          SizedBox(
+            height: 46,
+              child: Center(child: _buildTypeSpecifiedIcon(element),
+              ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(5),
-            child: Obx(() {
-              int points = rewardsList.rx.value.fold(0,
-                  (previousValue, element) => previousValue + element.points);
-              return Text(points.toString());
-            }),
-          ),
-        ],
-      ));
-
-  Widget _buildSpecificPointsColumn(BuildContext context, RewardType type) =>
-      Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(5),
-              child: _buildTypeSpecifiedIcon(type),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(5),
-              child: Obx(() {
-                return Text(rewardsList.rx.value
+      );
+    }
+    iconTableRowWidgets
+        .add(const Center(child: Text('Σ', style: TextStyle(color: primary, fontSize: 24))));
+    for (var type in RewardType.values) {
+      valueTableRowWidgets.add(
+        Obx(() {
+          return SizedBox(
+            height: 28,
+            child: Center(
+              child: Text(
+                rewardsList.rx.value
                     .fold<int>(
                       0,
                       (previousValue, element) => element.rewardType == type
                           ? previousValue + element.points
                           : previousValue,
                     )
-                    .toString());
-              }),
+                    .toString(),
+              ),
             ),
-          ],
-        ),
+          );
+        }),
       );
+    }
+    valueTableRowWidgets.add(
+      Obx(() {
+        int points = rewardsList.rx.value.fold(
+            0, (previousValue, element) => previousValue + element.points);
+        return Center(child: Text(points.toString()));
+      }),
+    );
+    return SizedBox(
+      height: 92,
+      child: Card(
+        child: Table(
+          children: [
+            TableRow(children: iconTableRowWidgets),
+            TableRow(children: valueTableRowWidgets),
+          ],
+          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        ),
+      ),
+    );
+  }
 
   Icon _buildTypeSpecifiedIcon(RewardType rewardType) {
     late IconData iconData;
@@ -313,11 +272,10 @@ class LastRewards extends StatelessWidget {
                       return ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: 4,
-                        itemBuilder: (context, index) =>
-                            SizedBox(
-                              width: 117,
-                              child: VerticalListTile(reward: list[index]),
-                            ),
+                        itemBuilder: (context, index) => SizedBox(
+                          width: 117,
+                          child: VerticalListTile(reward: list[index]),
+                        ),
                       );
                     }),
                   ),
@@ -400,6 +358,26 @@ class ExportMonth extends StatelessWidget {
                     .toLowerCase(),
               );
             },
+          ),
+        ),
+      );
+}
+
+class BackupData extends StatelessWidget {
+  const BackupData({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => Card(
+        child: ListTile(
+          leading: const Icon(
+            Icons.backup,
+          ),
+          title: const Text('BackUp Data'),
+          trailing: IconButton(
+            icon: const Icon(
+              Icons.arrow_forward,
+            ),
+            onPressed: () async => backup(),
           ),
         ),
       );

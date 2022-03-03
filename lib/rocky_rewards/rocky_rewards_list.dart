@@ -76,7 +76,7 @@ class RockyRewardsList extends Iterable<RockyReward> with ChangeNotifier {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     List<String> rewardsListInJSON = [];
     for (var reward in this) {
-      rewardsListInJSON.add(jsonEncode(await reward.toJSON()));
+      rewardsListInJSON.add(jsonEncode(reward.toJSON()));
     }
     preferences.setStringList('rewards', rewardsListInJSON);
   }

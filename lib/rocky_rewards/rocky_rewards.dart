@@ -1,5 +1,3 @@
-import 'dart:async';
-
 T _getFromJSON<T>(Map<String, dynamic> json, String path, T fallback) {
   Object? result = json[path];
   if (result == null || result is! T) {
@@ -38,7 +36,7 @@ class RockyReward extends Comparable<RockyReward> {
   final int points;
   final String phone;
 
-  Future<Map<String, Object>> toJSON() async {
+  Map<String, Object> toJSON() {
     Map<String, Object> result = {};
     result['date'] = date.toString();
     result['rewardType'] = rewardType.index;

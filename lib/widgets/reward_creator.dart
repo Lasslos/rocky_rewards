@@ -1,5 +1,4 @@
 import 'package:date_utils/date_utils.dart' as date_utils;
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttercontactpicker/fluttercontactpicker.dart';
 import 'package:get/get.dart';
@@ -125,6 +124,9 @@ class _RewardCreator extends StatelessWidget {
           totalSwitches: RewardType.values.length,
           labels: rewardTypeNameList,
           onToggle: (index) {
+            if (index == null) {
+              return;
+            }
             rewardType.value = RewardType.values[index];
           },
         ),
@@ -173,6 +175,9 @@ class _RewardCreator extends StatelessWidget {
           totalSwitches: AttendanceType.values.length,
           labels: attendanceTypeNameList,
           onToggle: (index) {
+            if (index == null) {
+              return;
+            }
             attendanceType.value = AttendanceType.values[index];
           },
         ),

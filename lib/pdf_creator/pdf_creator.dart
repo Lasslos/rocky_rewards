@@ -1,11 +1,9 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:date_utils/date_utils.dart' as date_utils;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:path_provider/path_provider.dart' as pp;
 import 'package:rocky_rewards/pdf_creator/coordinates.dart';
 import 'package:rocky_rewards/rocky_rewards/rocky_rewards.dart';
 import 'package:rocky_rewards/rocky_rewards/rocky_rewards_list.dart';
@@ -216,7 +214,7 @@ void _fillRowInPage(PdfPage page, RockyReward reward, RowCoordinates row) {
 Future<void> writeAndOpenPDF(
     BuildContext context, List<int> bytes, String fileName) async {
   //Only works on android!
-  var path = (await getExternalStorageDirectory())!.path;
+  var path = (await pp.getApplicationDocumentsDirectory()).path;
   var file = File('$path/$fileName');
   await file.writeAsBytes(bytes, flush: true);
   var result = await OpenFile.open(file.path);

@@ -1,6 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:rocky_rewards/widgets/home_page.dart';
 
 const Color primary = Color(0xFFCC0A2D);
