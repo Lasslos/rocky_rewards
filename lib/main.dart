@@ -24,7 +24,16 @@ class MyApp extends StatelessWidget {
     ],
     darkTheme: ThemeData(
       brightness: Brightness.dark,
+      primarySwatch: Colors.red,
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        backgroundColor: primary
+      ),
       primaryColor: primary,
+      primaryColorLight: primary,
+      primaryColorDark: primary,
+      dividerColor: primary,
+      secondaryHeaderColor: primary,
+      indicatorColor: primary,
     ),
     home: const HomePage(),
   );

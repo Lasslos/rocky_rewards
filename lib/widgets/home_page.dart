@@ -144,33 +144,35 @@ class CurrentPoints extends StatelessWidget {
     var theme = Theme.of(context);
     return SizedBox(
       height: 92,
-      child: Shimmer.fromColors(
-          period: const Duration(milliseconds: 1400),
-          highlightColor: theme.scaffoldBackgroundColor,
-          baseColor: theme.hintColor,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: theme.hintColor,
-                  borderRadius: const BorderRadius.all(
-                      Radius.circular(20)),
+      child: Card(
+        child: Shimmer.fromColors(
+            period: const Duration(milliseconds: 1400),
+            highlightColor: theme.scaffoldBackgroundColor,
+            baseColor: theme.hintColor,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: theme.hintColor,
+                    borderRadius: const BorderRadius.all(
+                        Radius.circular(20)),
+                  ),
+                  height: 20,
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
                 ),
-                height: 20,
-                margin: const EdgeInsets.symmetric(horizontal: 16),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  color: theme.hintColor,
-                  borderRadius: const BorderRadius.all(
-                      Radius.circular(20)),
+                Container(
+                  decoration: BoxDecoration(
+                    color: theme.hintColor,
+                    borderRadius: const BorderRadius.all(
+                        Radius.circular(20)),
+                  ),
+                  height: 20,
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
                 ),
-                height: 20,
-                margin: const EdgeInsets.symmetric(horizontal: 16),
-              ),
-            ],
-          ),
+              ],
+            ),
+        ),
       )
     );
   }
