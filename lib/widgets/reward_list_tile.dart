@@ -33,7 +33,7 @@ class HorizontalRewardListTile extends StatelessWidget {
             IconButton(
               onPressed: () => _delete(context),
               tooltip: 'Delete',
-              icon: const Icon(Icons.delete, color: Colors.red),
+              icon: const Icon(Icons.delete, color: primary),
             ),
           ],
         ),
@@ -58,7 +58,7 @@ class HorizontalRewardListTile extends StatelessWidget {
                     rewardsList.remove(reward);
                     Navigator.pop(context);
                   },
-                  child: const Text('Ok', style: TextStyle(color: Colors.red)),
+                  child: const Text('Ok', style: TextStyle(color: primary)),
                 ),
               ],
             ));

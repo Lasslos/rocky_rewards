@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:month_year_picker/month_year_picker.dart';
 import 'package:rocky_rewards/backup/export_backup.dart';
 import 'package:rocky_rewards/pdf_creator/pdf_creator.dart';
 import 'package:rocky_rewards/rocky_rewards/rocky_rewards.dart';
@@ -10,7 +11,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:rocky_rewards/widgets/reward_list_tile.dart';
 import 'package:date_utils/date_utils.dart' as date_utils;
-import 'package:month_picker_dialog/month_picker_dialog.dart';
 
 import '../main.dart';
 import 'all_items_list_view.dart';
@@ -79,21 +79,25 @@ class CurrentPoints extends StatelessWidget {
   const CurrentPoints({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => Obx(() {
+    if (rewardsList.initialized.isFalse) {
+      return _loader(context);
+    }
 
     var iconTableRowWidgets = <Widget>[];
     var valueTableRowWidgets = <Widget>[];
     for (var element in RewardType.values) {
       iconTableRowWidgets.add(
-          SizedBox(
-            height: 46,
-              child: Center(child: _buildTypeSpecifiedIcon(element),
-              ),
+        SizedBox(
+          height: 46,
+          child: Center(
+            child: _buildTypeSpecifiedIcon(element),
           ),
+        ),
       );
     }
-    iconTableRowWidgets
-        .add(const Center(child: Text('Σ', style: TextStyle(color: primary, fontSize: 24))));
+    iconTableRowWidgets.add(const Center(
+        child: Text('Σ', style: TextStyle(color: primary, fontSize: 24))));
     for (var type in RewardType.values) {
       valueTableRowWidgets.add(
         Obx(() {
@@ -133,6 +137,41 @@ class CurrentPoints extends StatelessWidget {
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         ),
       ),
+    );
+  });
+
+  Widget _loader(BuildContext context) {
+    var theme = Theme.of(context);
+    return SizedBox(
+      height: 92,
+      child: Shimmer.fromColors(
+          period: const Duration(milliseconds: 1400),
+          highlightColor: theme.scaffoldBackgroundColor,
+          baseColor: theme.hintColor,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: theme.hintColor,
+                  borderRadius: const BorderRadius.all(
+                      Radius.circular(20)),
+                ),
+                height: 20,
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: theme.hintColor,
+                  borderRadius: const BorderRadius.all(
+                      Radius.circular(20)),
+                ),
+                height: 20,
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+              ),
+            ],
+          ),
+      )
     );
   }
 
@@ -269,13 +308,16 @@ class LastRewards extends StatelessWidget {
                       if (itemCount > 4) {
                         itemCount = 4;
                       }
-                      return ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 4,
-                        itemBuilder: (context, index) => SizedBox(
+                      var children = <Widget>[];
+                      for (int i = 0; i < itemCount; i++) {
+                        children.add(SizedBox(
                           width: 117,
-                          child: VerticalListTile(reward: list[index]),
-                        ),
+                          child: VerticalListTile(reward: list[i]),
+                        ));
+                      }
+                      return ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: children,
                       );
                     }),
                   ),
@@ -337,7 +379,7 @@ class ExportMonth extends StatelessWidget {
                 return;
               }
 
-              var month = await showMonthPicker(
+              var month = await showMonthYearPicker(
                 context: context,
                 initialDate: DateTime.now(),
                 firstDate: DateTime.now().subtract(const Duration(days: 365)),

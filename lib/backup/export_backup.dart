@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:rocky_rewards/rocky_rewards/rocky_rewards_list.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 
 Future<void> backup() async {
   var path = (await getApplicationDocumentsDirectory()).path;
