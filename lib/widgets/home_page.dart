@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:month_year_picker/month_year_picker.dart';
-import 'package:rocky_rewards/backup/export_backup.dart';
+import 'package:rocky_rewards/backup/export_import.dart';
 import 'package:rocky_rewards/pdf_creator/pdf_creator.dart';
 import 'package:rocky_rewards/rocky_rewards/rocky_rewards.dart';
 import 'package:rocky_rewards/rocky_rewards/rocky_rewards_list.dart';
@@ -56,8 +56,9 @@ class HomePage extends StatelessWidget {
                 CurrentPoints(),
                 LastRewards(),
                 AllRewards(),
-                ExportMonth(),
+                GenerateMonthPDF(),
                 BackupData(),
+                ImportData(),
               ],
             ),
           ),
@@ -239,16 +240,16 @@ class AllRewards extends StatelessWidget {
       );
 }
 
-class ExportMonth extends StatelessWidget {
-  const ExportMonth({Key? key}) : super(key: key);
+class GenerateMonthPDF extends StatelessWidget {
+  const GenerateMonthPDF({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => Card(
         child: ListTile(
           leading: const Icon(
-            Icons.import_export,
+            Icons.picture_as_pdf,
           ),
-          title: const Text('Export Month'),
+          title: const Text('Generate Sheet'),
           trailing: IconButton(
             icon: const Icon(Icons.arrow_forward),
             onPressed: () async {
@@ -302,13 +303,33 @@ class BackupData extends StatelessWidget {
           leading: const Icon(
             Icons.backup,
           ),
-          title: const Text('BackUp Data'),
+          title: const Text('Export Data'),
           trailing: IconButton(
             icon: const Icon(
               Icons.arrow_forward,
             ),
-            onPressed: () async => backup(),
+            onPressed: () async => export(),
           ),
         ),
       );
+}
+
+class ImportData extends StatelessWidget {
+  const ImportData({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => Card(
+    child: ListTile(
+      leading: const Icon(
+        Icons.cloud_download,
+      ),
+      title: const Text('Import Data'),
+      trailing: IconButton(
+        icon: const Icon(
+          Icons.arrow_forward,
+        ),
+        onPressed: () async => import(context),
+      ),
+    ),
+  );
 }
