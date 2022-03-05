@@ -31,28 +31,28 @@ class _RewardCreator extends StatelessWidget {
   _RewardCreator({
     Key? key,
     DateTime? date,
-    RewardType rewardType = RewardType.volunteer,
+    RewardType? rewardType,
     String groupName = '',
     String description = '',
-    AttendanceType attendanceType = AttendanceType.participant,
+    AttendanceType? attendanceType,
     int hoursOrNumberOfGames = 1,
     int points = 1,
     String phoneNumber = '',
   })  : date = (date ?? DateTime.now()).obs,
-        rewardType = rewardType.obs,
+        rewardType = Rx<RewardType?>(rewardType),
         groupNameController = TextEditingController(text: groupName),
         descriptionController = TextEditingController(text: description),
-        attendanceType = attendanceType.obs,
+        attendanceType = Rx<AttendanceType?>(attendanceType),
         hoursOrNumberOfGames = hoursOrNumberOfGames.obs,
         points = points.obs,
         phoneController = TextEditingController(text: phoneNumber),
         super(key: key);
 
   final Rx<DateTime> date;
-  final Rx<RewardType> rewardType;
+  final Rx<RewardType?> rewardType;
   final TextEditingController groupNameController;
   final TextEditingController descriptionController;
-  final Rx<AttendanceType> attendanceType;
+  final Rx<AttendanceType?> attendanceType;
   final Rx<int> hoursOrNumberOfGames;
   final Rx<int> points;
   final TextEditingController phoneController;
@@ -67,7 +67,7 @@ class _RewardCreator extends StatelessWidget {
       body: ListView(
         children: [
           _buildDateSelector(context),
-          _buildRewardsTypeSelector(context),
+          _buildRewardTypeSelector(context),
           _buildGroupNameTextField(context),
           _buildDescriptionTextField(context),
           _buildAttendanceTypeSelector(context),
@@ -104,8 +104,8 @@ class _RewardCreator extends StatelessWidget {
         ),
       );
 
-  Widget _buildRewardsTypeSelector(BuildContext context) {
-    List<String> rewardTypeNameList = [];
+  Widget _buildRewardTypeSelector(BuildContext context) {
+    List<String> rewardTypeNameList = ['Select'];
     for (var rewardType in RewardType.values) {
       var name = rewardType
           .toString()
@@ -118,16 +118,21 @@ class _RewardCreator extends StatelessWidget {
       padding: const EdgeInsets.all(15),
       child: Center(
         child: ToggleSwitch(
-          initialLabelIndex: rewardType.value.index,
-          minWidth: (MediaQuery.of(context).size.width - 50) / 3,
+          initialLabelIndex: rewardType.value?.index ?? 0,
+          minWidth: (MediaQuery.of(context).size.width - 50) / 4,
           animate: true,
-          totalSwitches: RewardType.values.length,
+          animationDuration: 250,
+          totalSwitches: RewardType.values.length + 1,
           labels: rewardTypeNameList,
           onToggle: (index) {
             if (index == null) {
               return;
             }
-            rewardType.value = RewardType.values[index];
+            if (index == 0) {
+              rewardType.value = null;
+              return;
+            }
+            rewardType.value = RewardType.values[index - 1];
           },
         ),
       ),
@@ -156,7 +161,7 @@ class _RewardCreator extends StatelessWidget {
       );
 
   Widget _buildAttendanceTypeSelector(BuildContext context) {
-    List<String> attendanceTypeNameList = [];
+    List<String> attendanceTypeNameList = ['Select'];
     for (var attendanceType in AttendanceType.values) {
       var name = attendanceType
           .toString()
@@ -169,16 +174,21 @@ class _RewardCreator extends StatelessWidget {
       padding: const EdgeInsets.all(5),
       child: Center(
         child: ToggleSwitch(
-          initialLabelIndex: attendanceType.value.index,
-          minWidth: (MediaQuery.of(context).size.width - 50) / 2,
+          initialLabelIndex: attendanceType.value?.index ?? 0,
+          minWidth: (MediaQuery.of(context).size.width - 50) / 3,
           animate: true,
-          totalSwitches: AttendanceType.values.length,
+          animationDuration: 250,
+          totalSwitches: AttendanceType.values.length + 1,
           labels: attendanceTypeNameList,
           onToggle: (index) {
             if (index == null) {
               return;
             }
-            attendanceType.value = AttendanceType.values[index];
+            if (index == 0) {
+              attendanceType.value = null;
+              return;
+            }
+            attendanceType.value = AttendanceType.values[index - 1];
           },
         ),
       ),
@@ -264,7 +274,9 @@ class _RewardCreator extends StatelessWidget {
           onPressed: () async {
             if (groupNameController.text.isEmpty ||
                 descriptionController.text.isEmpty ||
-                phoneController.text.isEmpty) {
+                phoneController.text.isEmpty ||
+                rewardType.value == null ||
+                attendanceType.value == null) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   backgroundColor: primary,
@@ -285,10 +297,10 @@ class _RewardCreator extends StatelessWidget {
               context,
               RockyReward(
                 date.value,
-                rewardType.value,
+                rewardType.value!,
                 groupNameController.text,
                 descriptionController.text,
-                attendanceType.value,
+                attendanceType.value!,
                 hoursOrNumberOfGames.value,
                 points.value,
                 phoneController.text,

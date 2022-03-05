@@ -94,26 +94,23 @@ class CurrentPoints extends StatelessWidget {
     iconTableRowWidgets.add(const Center(
         child: Text('Σ', style: TextStyle(color: primary, fontSize: 24))));
     for (var type in RewardType.values) {
-      valueTableRowWidgets.add(
-        SizedBox(
-            height: 28,
-            child: Center(
-              child: Obx(() {
-                  return Text(
-                    rewardsList.rx.value
-                        .fold<int>(
-                          0,
-                          (previousValue, element) => element.rewardType == type
-                              ? previousValue + element.points
-                              : previousValue,
-                        )
-                        .toString(),
-                  );
-                }
-              ),
-            ),
-          )
-      );
+      valueTableRowWidgets.add(SizedBox(
+        height: 28,
+        child: Center(
+          child: Obx(() {
+            return Text(
+              rewardsList.rx.value
+                  .fold<int>(
+                    0,
+                    (previousValue, element) => element.rewardType == type
+                        ? previousValue + element.points
+                        : previousValue,
+                  )
+                  .toString(),
+            );
+          }),
+        ),
+      ));
     }
     valueTableRowWidgets.add(
       Obx(() {
