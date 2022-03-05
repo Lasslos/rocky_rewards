@@ -8,7 +8,6 @@ import 'package:rocky_rewards/rocky_rewards/rocky_rewards_list.dart';
 import 'package:rocky_rewards/widgets/reward_creator.dart';
 import 'package:rocky_rewards/widgets/settings_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:rocky_rewards/widgets/reward_list_tile.dart';
 import 'package:date_utils/date_utils.dart' as date_utils;
 
@@ -79,11 +78,7 @@ class CurrentPoints extends StatelessWidget {
   const CurrentPoints({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => Obx(() {
-    if (rewardsList.initialized.isFalse) {
-      return _loader(context);
-    }
-
+  Widget build(BuildContext context) {
     var iconTableRowWidgets = <Widget>[];
     var valueTableRowWidgets = <Widget>[];
     for (var element in RewardType.values) {
@@ -100,23 +95,24 @@ class CurrentPoints extends StatelessWidget {
         child: Text('Σ', style: TextStyle(color: primary, fontSize: 24))));
     for (var type in RewardType.values) {
       valueTableRowWidgets.add(
-        Obx(() {
-          return SizedBox(
+        SizedBox(
             height: 28,
             child: Center(
-              child: Text(
-                rewardsList.rx.value
-                    .fold<int>(
-                      0,
-                      (previousValue, element) => element.rewardType == type
-                          ? previousValue + element.points
-                          : previousValue,
-                    )
-                    .toString(),
+              child: Obx(() {
+                  return Text(
+                    rewardsList.rx.value
+                        .fold<int>(
+                          0,
+                          (previousValue, element) => element.rewardType == type
+                              ? previousValue + element.points
+                              : previousValue,
+                        )
+                        .toString(),
+                  );
+                }
               ),
             ),
-          );
-        }),
+          )
       );
     }
     valueTableRowWidgets.add(
@@ -137,43 +133,6 @@ class CurrentPoints extends StatelessWidget {
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         ),
       ),
-    );
-  });
-
-  Widget _loader(BuildContext context) {
-    var theme = Theme.of(context);
-    return SizedBox(
-      height: 92,
-      child: Card(
-        child: Shimmer.fromColors(
-            period: const Duration(milliseconds: 1400),
-            highlightColor: theme.scaffoldBackgroundColor,
-            baseColor: theme.hintColor,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: theme.hintColor,
-                    borderRadius: const BorderRadius.all(
-                        Radius.circular(20)),
-                  ),
-                  height: 20,
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: theme.hintColor,
-                    borderRadius: const BorderRadius.all(
-                        Radius.circular(20)),
-                  ),
-                  height: 20,
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                ),
-              ],
-            ),
-        ),
-      )
     );
   }
 
@@ -232,76 +191,6 @@ class LastRewards extends StatelessWidget {
                   child: Center(
                     child: Obx(() {
                       var list = rewardsList.rx.value.copy.reversed.toList();
-                      var theme = Theme.of(context);
-                      if (!rewardsList.initialized.value) {
-                        return Shimmer.fromColors(
-                          period: const Duration(milliseconds: 1400),
-                          highlightColor: theme.scaffoldBackgroundColor,
-                          baseColor: theme.hintColor,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: 4,
-                            itemBuilder: (context, index) => Container(
-                              margin: const EdgeInsets.all(5),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: theme.hintColor,
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(20)),
-                                    ),
-                                    height: 20,
-                                    width: 100,
-                                    margin: const EdgeInsets.only(
-                                        bottom: 5, top: 5),
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: theme.hintColor,
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(20)),
-                                    ),
-                                    height: 14,
-                                    width: 100,
-                                    margin: const EdgeInsets.only(
-                                        bottom: 2.5, top: 2.5),
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: theme.hintColor,
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(20)),
-                                    ),
-                                    height: 14,
-                                    width: 100,
-                                  ),
-                                  TextButton(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            color: theme.hintColor,
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(20)),
-                                          ),
-                                          height: 14,
-                                          width: 50,
-                                        ),
-                                        const Icon(Icons.arrow_forward),
-                                      ],
-                                    ),
-                                    onPressed: () {},
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      }
                       if (list.isEmpty) {
                         return const Text('Nothing here. Do something!');
                       }

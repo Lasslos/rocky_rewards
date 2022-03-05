@@ -50,9 +50,6 @@ Future<ByteData> _getTemplateBytes() async {
 
 Future<List<int>> createPDFBytes(
     DateTime month, String firstName, String lastName, String school) async {
-  if (!rewardsList.initialized.value) {
-    await rewardsList.initialized.stream.first;
-  }
   var list = rewardsList.copy
       .where((reward) =>
           reward.date.year == month.year && reward.date.month == month.month)

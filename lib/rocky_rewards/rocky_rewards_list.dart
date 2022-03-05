@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:rocky_rewards/rocky_rewards/rocky_rewards.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,8 +13,6 @@ class RockyRewardsList extends Iterable<RockyReward> with ChangeNotifier {
     _initRx();
     _load();
   }
-
-  RxBool initialized = RxBool(false);
 
   final List<RockyReward> _field = [];
   RockyReward operator [](int index) => _field[index];
@@ -63,13 +62,12 @@ class RockyRewardsList extends Iterable<RockyReward> with ChangeNotifier {
 
   Future<void> _load() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    await Future.delayed(const Duration(milliseconds: 1500));
     List<String> rewardsList = preferences.getStringList('rewards') ?? [];
     for (var reward in rewardsList) {
       add(RockyReward.fromJSON(jsonDecode(reward)));
     }
     addListener(_save);
-    initialized.value = true;
+    FlutterNativeSplash.remove();
   }
 
   Future<void> _save() async {
